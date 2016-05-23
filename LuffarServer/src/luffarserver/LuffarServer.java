@@ -18,7 +18,7 @@ public class LuffarServer {
        
         //GameServer gs = new GameServer();
         GameHandler hand = new GameHandler();
-        hand.checkWin(96, 2);
+        hand.checkWin(85, 2);
         
     }
     
