@@ -7,14 +7,23 @@ package luffarklient;
 
 import java.util.ArrayList;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+
 /*btnNewGame.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -40,24 +49,24 @@ public class LuffarKlient extends Application {
         Label lblTurnNr = new Label("Turn Number : " + 0);
         Label lblTime = new Label("Time : " + 0);
         Label lblPlayer1 = new Label("Player 1 : ");
-        Label lblPlayer2 = new Label("Player 2 : ");; 
+        Label lblPlayer2 = new Label("Player 2 : ");;
         TextArea txtChat = new TextArea();
         ArrayList<Button> arr = new ArrayList<>();
 
         VBox buttonArea = new VBox();
         GridPane root = new GridPane();
         VBox scoreArea = new VBox();
-        
+
         btnNewGame.setMaxWidth(Double.MAX_VALUE);
         btnInfo.setMaxWidth(Double.MAX_VALUE);
         btnHighScore.setMaxWidth(Double.MAX_VALUE);
-        
+
         playArea.setMinSize(300, 300);
-        
-        
-        scoreArea.getChildren().addAll(lblTurnNr,lblTime,lblPlayer1,lblPlayer2,txtChat);
+
+        scoreArea.getChildren().addAll(lblTurnNr, lblTime, lblPlayer1, lblPlayer2, txtChat);
         for (int t = 0; t < 400; t++) {
-            Button playButton = new Button("" + (t + 1));
+            Button playButton = new Button();
+            playButton.setPrefWidth(40);
             playButton.setMaxWidth(Double.MAX_VALUE);
             playButton.setStyle(""
                     + "-fx-background-color: lightblue; "
@@ -69,18 +78,31 @@ public class LuffarKlient extends Application {
             cols++;
             arr.add(playButton);
             if (t + 1 == rowcheck) {
-                System.out.println("t = " +t);
-                cols= 1;
+                System.out.println("t = " + t);
+                cols = 1;
                 rows++;
-                rowcheck+=20;
-                System.out.println("rowcheck = " +rowcheck);
+                rowcheck += 20;
+                System.out.println("rowcheck = " + rowcheck);
             }
+            playButton.addEventHandler(MouseEvent.MOUSE_CLICKED,
+                    new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent e) {
+                    System.out.println("Hello World!");
+                    Paint lightblue = Color.LIGHTBLUE;
+                    Paint black = Color.BLACK;
+                    Circle circle = new Circle(5,lightblue);
+                    circle.setStroke(black);
+                    playButton.setGraphic(circle);
+                }
+            });
 
         }
-        buttonArea.getChildren().addAll(btnNewGame, btnInfo,btnHighScore);
-        
-        GridPane.setMargin(buttonArea, new Insets(0,0,20,0));
-        GridPane.setMargin(playArea, new Insets(0,10,0,0));
+
+        buttonArea.getChildren().addAll(btnNewGame, btnInfo, btnHighScore);
+
+        GridPane.setMargin(buttonArea, new Insets(0, 0, 20, 0));
+        GridPane.setMargin(playArea, new Insets(0, 10, 0, 0));
         root.add(buttonArea, 1, 1);
         root.add(playArea, 1, 2);
         root.add(scoreArea, 2, 2);
