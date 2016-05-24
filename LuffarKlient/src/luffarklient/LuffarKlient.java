@@ -5,8 +5,18 @@
  */
 package luffarklient;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -14,6 +24,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -37,25 +48,45 @@ import javafx.stage.Stage;
  */
 public class LuffarKlient extends Application {
 
+    Button btnNewGame;
+    TextArea textAddress;
+    Label textPort;
+    TextArea txtChat;
+    Button btnInfo;
+    Button btnHighScore;
+    GridPane playArea;
+    Label lblTurnNr;
+    Label lblTime;
+    Label lblPlayer1;
+    Label lblPlayer2;
+    VBox scoreArea;
+    VBox buttonArea;
+    GridPane root;
+    TextField textResponse;
+
     @Override
     public void start(Stage primaryStage) {
-        Button btnNewGame = new Button("New Game");
-        Button btnInfo = new Button("Help");
-        Button btnHighScore = new Button("High Score");
-        GridPane playArea = new GridPane();
+        btnNewGame = new Button("New Game");
+        btnInfo = new Button("Help");
+        btnHighScore = new Button("High Score");
+        playArea = new GridPane();
+        textAddress = new TextArea("localhost");
+        textPort = new Label("3004");
+        textResponse = new TextField();
         int rows = 1;
         int rowcheck = 20;
         int cols = 1;
-        Label lblTurnNr = new Label("Turn Number : " + 0);
-        Label lblTime = new Label("Time : " + 0);
-        Label lblPlayer1 = new Label("Player 1 : ");
-        Label lblPlayer2 = new Label("Player 2 : ");;
-        TextArea txtChat = new TextArea();
+        lblTurnNr = new Label("Turn Number : " + 0);
+        lblTime = new Label("Time : " + 0);
+        lblPlayer1 = new Label("Player 1 : ");
+        lblPlayer2 = new Label("Player 2 : ");
+
+        txtChat = new TextArea();
         ArrayList<Button> arr = new ArrayList<>();
 
-        VBox buttonArea = new VBox();
+        buttonArea = new VBox();
         GridPane root = new GridPane();
-        VBox scoreArea = new VBox();
+        scoreArea = new VBox();
 
         btnNewGame.setMaxWidth(Double.MAX_VALUE);
         btnInfo.setMaxWidth(Double.MAX_VALUE);
@@ -63,7 +94,6 @@ public class LuffarKlient extends Application {
 
         playArea.setMinSize(300, 300);
 
-        scoreArea.getChildren().addAll(lblTurnNr, lblTime, lblPlayer1, lblPlayer2, txtChat);
         for (int t = 0; t < 400; t++) {
             Button playButton = new Button();
             playButton.setPrefWidth(40);
@@ -78,11 +108,9 @@ public class LuffarKlient extends Application {
             cols++;
             arr.add(playButton);
             if (t + 1 == rowcheck) {
-                System.out.println("t = " + t);
                 cols = 1;
                 rows++;
                 rowcheck += 20;
-                System.out.println("rowcheck = " + rowcheck);
             }
             playButton.addEventHandler(MouseEvent.MOUSE_CLICKED,
                     new EventHandler<MouseEvent>() {
@@ -91,14 +119,16 @@ public class LuffarKlient extends Application {
                     System.out.println("Hello World!");
                     Paint lightblue = Color.LIGHTBLUE;
                     Paint black = Color.BLACK;
-                    Circle circle = new Circle(5,lightblue);
+                    Circle circle = new Circle(5, lightblue);
                     circle.setStroke(black);
                     playButton.setGraphic(circle);
                 }
             });
 
         }
+        btnNewGame.setOnAction(buttonConnectEventHandler);
 
+        scoreArea.getChildren().addAll(lblTurnNr, lblTime, lblPlayer1, lblPlayer2, txtChat, textAddress, textPort , textResponse);
         buttonArea.getChildren().addAll(btnNewGame, btnInfo, btnHighScore);
 
         GridPane.setMargin(buttonArea, new Insets(0, 0, 20, 0));
@@ -111,13 +141,107 @@ public class LuffarKlient extends Application {
         primaryStage.setTitle("TickTackToe");
         primaryStage.setScene(scene);
         primaryStage.show();
+
     }
+    EventHandler<ActionEvent> buttonConnectEventHandler
+            = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+            String tMsg = txtChat.getText();
+            if (tMsg.equals("")) {
+                tMsg = null;
+            }
+
+            ClientComm clientComm
+                    = new ClientComm(textAddress.getText(),
+                            Integer.parseInt(textPort.getText()),
+                            tMsg);
+
+            new Thread(clientComm).start();
+        }
+    };
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+
         launch(args);
+
+    }
+
+}
+
+class ClientComm implements Runnable {
+
+    String dstAddress;
+    int dstPort;
+    String response = "";
+    String msgToServer;
+
+    public ClientComm(String addr, int port, String msgTo) {
+        dstAddress = addr;
+        dstPort = port;
+        msgToServer = msgTo;
+    }
+
+    @Override
+    public void run() {
+        Socket socket = null;
+        DataOutputStream dataOutputStream = null;
+        DataInputStream dataInputStream = null;
+
+        try {
+            socket = new Socket(dstAddress, dstPort);
+            dataOutputStream = new DataOutputStream(
+                    socket.getOutputStream());
+            dataInputStream = new DataInputStream(socket.getInputStream());
+
+            if (msgToServer != null) {
+                dataOutputStream.writeUTF(msgToServer);
+            }
+
+            response = dataInputStream.readUTF();
+
+        } catch (IOException ex) {
+            Logger.getLogger(LuffarKlient.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+
+            Platform.runLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    //textResponse.setText(response);
+                }
+
+            });
+
+            if (socket != null) {
+                try {
+                    socket.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(LuffarKlient.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            if (dataOutputStream != null) {
+                try {
+                    dataOutputStream.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(LuffarKlient.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            if (dataInputStream != null) {
+                try {
+                    dataInputStream.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(LuffarKlient.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+        }
     }
 
 }
