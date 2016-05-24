@@ -34,9 +34,10 @@ public class GameHandler {
         int northwest = 0;
         int eastwest = 0;
         
-        array[85] = 2;
-        array[86] = 2;
-        array[87] = 2;
+        array[19] = 2;
+        array[59] = 2;
+        array[79] = 2;
+        //array[99] = 2;
         
         array[boxClicked - 1] = playerNumber;
         
@@ -419,10 +420,23 @@ public class GameHandler {
         }
         }
         
-        
+      
+      int leftright = westeast + eastwest;
+      int updown = northsouth + southnorth;
+      int diagonal1 = northeast + eastnorth;
+      int diagonal2 = northwest + westnorth;
+      
+      String result = "";
+      
+      if((leftright >= 4) || (updown >= 4) || (diagonal1 >= 4) || (diagonal2 >= 4)){
+          result = "5 i rad";
+      }
+      else{
+          result = "ingen vinst";
+      }
      
         
-      System.out.println(westeast);
+      System.out.println(result);
                 
     }
     
