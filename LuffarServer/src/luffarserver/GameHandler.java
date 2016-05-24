@@ -34,10 +34,12 @@ public class GameHandler {
         int northwest = 0;
         int eastwest = 0;
         
-        array[19] = 2;
-        array[59] = 2;
-        array[79] = 2;
-        //array[99] = 2;
+        /*
+        array[105] = 2;
+        array[42] = 2;
+        array[63] = 2;
+        array[84] = 2;
+        */
         
         array[boxClicked - 1] = playerNumber;
         
@@ -105,22 +107,31 @@ public class GameHandler {
         
         if (southnorth == 1){
             boxClicked = boxClicked -20;
-            if(array[boxClicked-1-20] == playerNumber){
+            if(boxClicked -1-20 >= 0 ){
+               if(array[boxClicked-1-20] == playerNumber){
                 southnorth++;
+                }
             }
+            
         }
         
         if (southnorth == 2){
             boxClicked = boxClicked -20;
-            if(array[boxClicked-1-20] == playerNumber){
+            if(boxClicked -1-20 >= 0 ){
+                if(array[boxClicked-1-20] == playerNumber){
                 southnorth++;
+                }
             }
+            
         }
         if (southnorth == 3){
             boxClicked = boxClicked -20;
-            if(array[boxClicked-1-20] == playerNumber){
+            if(boxClicked -1-20 >= 0 ){
+                if(array[boxClicked-1-20] == playerNumber){
                 southnorth++;
+                }
             }
+            
         }
         
         boxClicked = orgBoxClicked;
@@ -192,6 +203,7 @@ public class GameHandler {
         
         if(westeast == 1){
             boxClicked = boxClicked +1;
+            
             if((boxClicked -1 +1 >= 0) && (boxClicked != 20) && (boxClicked != 40) && (boxClicked != 60) && (boxClicked != 80) &&
            (boxClicked != 100) && (boxClicked != 120) && (boxClicked != 140) && (boxClicked != 160) &&
            (boxClicked != 180) && (boxClicked != 200) && (boxClicked != 220) && (boxClicked != 240)  &&
@@ -283,29 +295,41 @@ public class GameHandler {
         
         boxClicked = orgBoxClicked;
         
-        if((array[boxClicked-1+20] == playerNumber) && (boxClicked <= 380)){
+        if((boxClicked -1 +20 >= 0) && (boxClicked -1 +20 <400)){
+            if((array[boxClicked-1+20] == playerNumber) && (boxClicked <= 380)){
             northsouth++;
+            }
         }
+        
         
         if(northsouth == 1){
             boxClicked = boxClicked +20;
-            if((array[boxClicked-1+20] == playerNumber) && (boxClicked <= 380)){
-            northsouth++;
-        }
+            if(((boxClicked -1 +20) >= 0)&& (boxClicked -1 +20< 400)){
+                if((array[boxClicked-1+20] == playerNumber) && (boxClicked <= 380)){
+                    northsouth++;
+                }
+            }
+            
         }
         
         if(northsouth == 2){
             boxClicked = boxClicked +20;
-            if((array[boxClicked-1+20] == playerNumber) && (boxClicked <= 380)){
-            northsouth++;
-        }
+            if(((boxClicked -1 +20) >= 0)&& (boxClicked -1 +20< 400)){
+                if((array[boxClicked-1+20] == playerNumber) && (boxClicked <= 380)){
+                    northsouth++;
+                }
+            }
+            
         }
         
         if(northsouth == 3){
             boxClicked = boxClicked +20;
-            if((array[boxClicked-1+20] == playerNumber) && (boxClicked <= 380)){
-            northsouth++;
-        }
+            if(((boxClicked -1 +20) >= 0)&& (boxClicked -1 +20< 400)){
+                if((array[boxClicked-1+20] == playerNumber) && (boxClicked <= 380)){
+                    northsouth++;
+                }
+            }
+            
         }
         
         boxClicked = orgBoxClicked;
