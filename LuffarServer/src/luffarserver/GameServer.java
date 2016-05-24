@@ -1,6 +1,8 @@
 
 package luffarserver;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -56,6 +58,8 @@ public class GameServer implements Runnable{
     //this flag is used to determine when to send the welcome message to the clients newly connected
     private boolean flag = false;
 		
+    String msgReply = "250";
+    
     public GameServer(){
         //if this is the first time the quiz runs, start the serverloop
         if(number == 0){
@@ -138,14 +142,16 @@ public class GameServer implements Runnable{
                     
                     //a new input stream for the client
                     InputStream stream  = connection.getInputStream();
-        
+                    DataOutputStream dataOutputStream = new DataOutputStream(
+                    connection.getOutputStream());
+                    //String messageFromClient = stream.readUTF() ;
                     //scanning the inputstream
                     sc = new Scanner(stream);
         
                     //waiting for the client to write something as a username
                     while(name.equals("")){
                     String s = sc.next();
-            
+                    //dataOutputStream.writeUTF(msgReply);
                     //setting this clients username
                     this.name = s;
                    

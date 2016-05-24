@@ -63,6 +63,10 @@ public class LuffarKlient extends Application {
     VBox buttonArea;
     GridPane root;
     TextField textResponse;
+    //ClientComm clientComm;
+    String adress = "localhost";
+    int portNumber = 3004;
+    PrintServer pServer;
 
     @Override
     public void start(Stage primaryStage) {
@@ -103,7 +107,7 @@ public class LuffarKlient extends Application {
                     + "-fx-text-fill: black;"
                     + "-fx-border-color: black;"
                     + "-fx-arc-height: 0;"
-                    + "-fx-arc-width: 0");
+                    + "-fx-arc-width: 0;");
             playArea.add(playButton, cols, rows);
             cols++;
             arr.add(playButton);
@@ -122,13 +126,15 @@ public class LuffarKlient extends Application {
                     Circle circle = new Circle(5, lightblue);
                     circle.setStroke(black);
                     playButton.setGraphic(circle);
+                    playButton.setDisable(true);
+                    pServer.sendMessage();
                 }
             });
 
         }
         btnNewGame.setOnAction(buttonConnectEventHandler);
 
-        scoreArea.getChildren().addAll(lblTurnNr, lblTime, lblPlayer1, lblPlayer2, txtChat, textAddress, textPort , textResponse);
+        scoreArea.getChildren().addAll(lblTurnNr, lblTime, lblPlayer1, lblPlayer2, txtChat, textAddress, textPort, textResponse);
         buttonArea.getChildren().addAll(btnNewGame, btnInfo, btnHighScore);
 
         GridPane.setMargin(buttonArea, new Insets(0, 0, 20, 0));
@@ -148,17 +154,26 @@ public class LuffarKlient extends Application {
 
         @Override
         public void handle(ActionEvent event) {
-            String tMsg = txtChat.getText();
-            if (tMsg.equals("")) {
-                tMsg = null;
+            System.out.println("Klienten startar");
+//		
+            try {
+//			Skapar en anslutning mot en server, denna kan kasta ett par exceptions (vilka alla är eller ligger under IOException)
+                Socket socket = new Socket(adress, portNumber);
+
+//			Kör igång en tråd för att kunna skriva till servern, klassen ser samma ut som serverns skrivar klass.			
+                pServer = new PrintServer(socket);
+                ReadServer rClient = new ReadServer(socket);
+                Thread t1 = new Thread(pServer);
+                t1.start();
+                Thread t2 = new Thread(rClient);
+                t2.start();
+
+            } //Denna catch-sats fångar exception från nästan alla rader i try-satsen, enkelt att göra men kanske inte så bra då det blir så generellt.
+            catch (IOException e) {
+                System.out.println("Exception som kastades: " + e);
             }
-
-            ClientComm clientComm
-                    = new ClientComm(textAddress.getText(),
-                            Integer.parseInt(textPort.getText()),
-                            tMsg);
-
-            new Thread(clientComm).start();
+            
+            btnNewGame.setDisable(true);
         }
     };
 
@@ -173,75 +188,4 @@ public class LuffarKlient extends Application {
 
 }
 
-class ClientComm implements Runnable {
 
-    String dstAddress;
-    int dstPort;
-    String response = "";
-    String msgToServer;
-
-    public ClientComm(String addr, int port, String msgTo) {
-        dstAddress = addr;
-        dstPort = port;
-        msgToServer = msgTo;
-    }
-
-    @Override
-    public void run() {
-        Socket socket = null;
-        DataOutputStream dataOutputStream = null;
-        DataInputStream dataInputStream = null;
-
-        try {
-            socket = new Socket(dstAddress, dstPort);
-            dataOutputStream = new DataOutputStream(
-                    socket.getOutputStream());
-            dataInputStream = new DataInputStream(socket.getInputStream());
-
-            if (msgToServer != null) {
-                dataOutputStream.writeUTF(msgToServer);
-            }
-
-            response = dataInputStream.readUTF();
-
-        } catch (IOException ex) {
-            Logger.getLogger(LuffarKlient.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-
-            Platform.runLater(new Runnable() {
-
-                @Override
-                public void run() {
-                    //textResponse.setText(response);
-                }
-
-            });
-
-            if (socket != null) {
-                try {
-                    socket.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(LuffarKlient.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (dataOutputStream != null) {
-                try {
-                    dataOutputStream.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(LuffarKlient.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            if (dataInputStream != null) {
-                try {
-                    dataInputStream.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(LuffarKlient.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-        }
-    }
-
-}
