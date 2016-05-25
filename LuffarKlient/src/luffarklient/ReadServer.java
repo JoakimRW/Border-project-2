@@ -19,16 +19,20 @@ import java.util.logging.Logger;
 public class ReadServer implements Runnable {
 
     private Socket connection;
-    String msgFromServer;
+    private String msgFromServer;
 
     public ReadServer(Socket connection) {
         this.connection = connection;
     }
-    
-    public String GetMessageFromServer(){
+
+    public void resetMessageFromServer() {
+        msgFromServer = null;
+    }
+
+    public String GetMessageFromServer() {
         return msgFromServer;
     }
-    
+
     @Override
     public void run() {
 
@@ -38,11 +42,13 @@ public class ReadServer implements Runnable {
             //  Sedan öppnas en ström för att läsa det man får till datorn. 
             Scanner reader = new Scanner(stream);
 //			Så länge som det finns en ny rad att hämta kommer denna skrivas ut, vilket endast kommer hända en gång i detta exempel.
+
             while (reader.hasNextLine()) {
 //				nextLine kastar exception men borde inte hända då vi kollar om det finns en ny rad varje gång, innan de läses.
+                System.out.println("readServer before = " + msgFromServer);
                 msgFromServer = reader.nextLine();
-                System.out.println(msgFromServer);
-                
+                System.out.println("readserver = " + msgFromServer);
+
             }
         } catch (IOException ex) {
             Logger.getLogger(ReadServer.class.getName()).log(Level.SEVERE, null, ex);

@@ -125,9 +125,9 @@ public class LuffarKlient extends Application {
                 public void handle(MouseEvent e) {
                     System.out.println("Hello World!");
                     if (canClick != false) {
-                        
+
                         System.out.println("button index +1= " + (arr.indexOf(playButton) + 1));
-                        pServer.sendMessage(""+ playerNumber + (arr.indexOf(playButton) + 1));
+                        pServer.sendMessage("" + playerNumber + (arr.indexOf(playButton) + 1));
                         canClick = false;
                         recMessage(rServer.GetMessageFromServer());
                         System.out.println("" + rServer.GetMessageFromServer());
@@ -155,16 +155,19 @@ public class LuffarKlient extends Application {
     }
 
     public void recMessage(String message) {
-
-        if (message != null) {
+        System.out.println("MFS = " + message);
+        while (message == null) {
+            System.out.println("Väntar på meddelande");
+        }
+        System.out.println("MFS After = " + message);
+        
             int pNumber, pIndex;
-            System.out.println("MFS = " + message);
 
             pNumber = message.charAt(0);
-            pIndex = Integer.parseInt(message.substring(1));
+            pIndex = Integer.parseInt(message.substring(1)) - 1;
             pIndex--;
             pArr[pIndex] = pNumber;
-
+            rServer.resetMessageFromServer();
             if (pNumber == 1) {
                 Paint lightblue = Color.LIGHTBLUE;
                 Paint black = Color.BLACK;
@@ -184,10 +187,7 @@ public class LuffarKlient extends Application {
                     canClick = true;
                 }
             }
-        } else {
-            System.out.println("Timing Fel!");
-            recMessage(message);
-        }
+         
     }
 
     EventHandler<ActionEvent> buttonConnectEventHandler
@@ -215,17 +215,20 @@ public class LuffarKlient extends Application {
                 pServer.sendMessage(playerName);
 
                 while (playerNumber == 0) {
+                    System.out.println("Väntar på Spelarnummer");
                     if (rServer.GetMessageFromServer() != null) {
                         playerNumber = Integer.parseInt(rServer.GetMessageFromServer());
                         System.out.println("Har fått spelarnummer = " + playerNumber);
-                        if(playerNumber == 1){
+                        if (playerNumber == 1) {
                             canClick = true;
                         }
-                        if(playerNumber == 2){
+                        if (playerNumber == 2) {
                             canClick = false;
                         }
+                        rServer.resetMessageFromServer();
+                        System.out.println("Message is reset = " + rServer.GetMessageFromServer());
                     }
-                    System.out.println("Väntar på Spelarnummer");
+
                 }
                 btnNewGame.setDisable(true);
             } //Denna catch-sats fångar exception från nästan alla rader i try-satsen, enkelt att göra men kanske inte så bra då det blir så generellt.
