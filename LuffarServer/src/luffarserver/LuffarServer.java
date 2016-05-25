@@ -21,14 +21,14 @@ public class LuffarServer {
         GameServer gs = new GameServer();
         //GameHandler hand = new GameHandler();
         //hand.checkWin(22, 2);
-        DataBaseConnection db = new DataBaseConnection();
+        //DataBaseConnection db = new DataBaseConnection();
         
         //ArrayList<HighScore> arraylist = new ArrayList<HighScore>();
         //arraylist = db.openRead();
         //System.out.println("index 0 : " + arraylist.get(0).getUser() + " moveswon " + arraylist.get(0).getMovesWon()+ " time: " + arraylist.get(0).getTime());
         //System.out.println("index 1 : " + arraylist.get(1).getUser() + " moveswon " + arraylist.get(1).getMovesWon()+ " time: " + arraylist.get(1).getTime());
         
-        db.writeHighScore("karl", 18, "2:35");
+        //db.writeHighScore("karl", 18, "2:35");
     }
     
 }
