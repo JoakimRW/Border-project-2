@@ -161,7 +161,7 @@ public class GameServer implements Runnable{
                     
                     System.out.println(name + " är nu uppkopplad! " + "spelarnummer = " + playerNumber);
                     
-                    String msgPlayerNumberToPlayer = "";
+                    String msgPlayerNumberToPlayer = Integer.toString(playerNumber);
                     PrintWriter printWriter = new PrintWriter (v[playerNumber-1].connection.getOutputStream());
                     printWriter.println(msgPlayerNumberToPlayer);
                     printWriter.flush();
