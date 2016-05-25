@@ -62,10 +62,10 @@ public class LuffarKlient extends Application {
     GridPane root;
     TextField txtSetName;
     String adress = "localhost";
-    int portNumber = 3004;
+    int portNumber = 3004, playerNumber = 0;
     PrintServer pServer;
     ReadServer rServer;
-    Boolean player1, player2;
+    Boolean player1, player2, canClick;
     TextInputDialog getName;
     String playerName;
     ArrayList<Button> arr;
@@ -124,14 +124,14 @@ public class LuffarKlient extends Application {
                 @Override
                 public void handle(MouseEvent e) {
                     System.out.println("Hello World!");
-                    Paint lightblue = Color.LIGHTBLUE;
-                    Paint black = Color.BLACK;
-                    Circle circle = new Circle(5, lightblue);
-                    circle.setStroke(black);
-                    playButton.setGraphic(circle);
-                    playButton.setDisable(true);
-                    System.out.println("button index +1= " + (arr.indexOf(playButton) + 1));
-                    pServer.sendMessage("" + (arr.indexOf(playButton) + 1));
+                    if (canClick != false) {
+                        playButton.setDisable(true);
+                        System.out.println("button index +1= " + (arr.indexOf(playButton) + 1));
+                        pServer.sendMessage("" + (arr.indexOf(playButton) + 1));
+                        canClick = false;
+                        recMessage(rServer.GetMessageFromServer());
+                        System.out.println("" + rServer.GetMessageFromServer());
+                    }
                 }
             });
 
@@ -155,20 +155,37 @@ public class LuffarKlient extends Application {
     }
 
     public void recMessage(String message) {
-        int pNumber, pIndex;
 
-        pNumber = message.charAt(0);
-        pIndex = Integer.parseInt(message.substring(1)) - 1;
+        if (message != null) {
+            int pNumber, pIndex;
 
-        pArr[pIndex] = pNumber;
-        if (pNumber == 1) {
-            Paint lightblue = Color.LIGHTBLUE;
-            Paint black = Color.BLACK;
-            Circle circle = new Circle(5, lightblue);
-            circle.setStroke(black);
-            arr.get(pIndex).setGraphic(circle);
-        } else if (pNumber == 2) {
-            arr.get(pIndex).setText("x");
+            pNumber = message.charAt(0);
+            pIndex = Integer.parseInt(message.substring(1)) - 1;
+
+            pArr[pIndex] = pNumber;
+
+            if (pNumber == 1) {
+                Paint lightblue = Color.LIGHTBLUE;
+                Paint black = Color.BLACK;
+                Circle circle = new Circle(5, lightblue);
+                circle.setStroke(black);
+                arr.get(pIndex).setGraphic(circle);
+                if (playerNumber == 1) {
+                    canClick = false;
+                } else {
+                    canClick = true;
+                }
+            } else if (pNumber == 2) {
+                arr.get(pIndex).setText("x");
+                if (playerNumber == 2) {
+                    canClick = false;
+                } else {
+                    canClick = true;
+                }
+            }
+        } else {
+            System.out.println("Timing Fel!");
+            recMessage(message);
         }
     }
 
@@ -193,6 +210,13 @@ public class LuffarKlient extends Application {
                 Optional<String> result = getName.showAndWait();
                 playerName = result.get();
                 pServer.sendMessage(playerName);
+
+                while (playerNumber == 0) {
+                    if (rServer.GetMessageFromServer() != null) {
+                        playerNumber = rServer.GetMessageFromServer().charAt(0);
+                    }
+                }
+
             } //Denna catch-sats fångar exception från nästan alla rader i try-satsen, enkelt att göra men kanske inte så bra då det blir så generellt.
             catch (IOException e) {
                 System.out.println("Exception som kastades: " + e);
