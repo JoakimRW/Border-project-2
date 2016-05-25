@@ -127,7 +127,7 @@ public class LuffarKlient extends Application {
                     if (canClick != false) {
                         playButton.setDisable(true);
                         System.out.println("button index +1= " + (arr.indexOf(playButton) + 1));
-                        pServer.sendMessage("" + (arr.indexOf(playButton) + 1));
+                        pServer.sendMessage(""+ playerNumber + (arr.indexOf(playButton) + 1));
                         canClick = false;
                         recMessage(rServer.GetMessageFromServer());
                         System.out.println("" + rServer.GetMessageFromServer());
@@ -214,7 +214,9 @@ public class LuffarKlient extends Application {
                 while (playerNumber == 0) {
                     if (rServer.GetMessageFromServer() != null) {
                         playerNumber = rServer.GetMessageFromServer().charAt(0);
+                        System.out.println("Har fått spelarnummer = " + playerNumber);
                     }
+                    System.out.println("Väntar på Spelarnummer");
                 }
 
             } //Denna catch-sats fångar exception från nästan alla rader i try-satsen, enkelt att göra men kanske inte så bra då det blir så generellt.
