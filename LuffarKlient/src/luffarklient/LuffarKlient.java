@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,6 +26,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -48,7 +50,7 @@ import javafx.stage.Stage;
  */
 public class LuffarKlient extends Application {
 
-    Button btnNewGame,btnInfo,btnHighScore,btnSetName;
+    Button btnNewGame, btnInfo, btnHighScore, btnSetName;
     TextArea txtChat;
     GridPane playArea;
     Label lblTurnNr;
@@ -62,8 +64,12 @@ public class LuffarKlient extends Application {
     String adress = "localhost";
     int portNumber = 3004;
     PrintServer pServer;
-    Boolean player1,player2;
-    
+    ReadServer rServer;
+    Boolean player1, player2;
+    TextInputDialog getName;
+    String playerName;
+    ArrayList<Button> arr;
+    private int[] pArr = new int[400];
 
     @Override
     public void start(Stage primaryStage) {
@@ -82,7 +88,7 @@ public class LuffarKlient extends Application {
         lblPlayer2 = new Label("Player 2 : ");
 
         txtChat = new TextArea();
-        ArrayList<Button> arr = new ArrayList<>();
+        arr = new ArrayList<>();
 
         buttonArea = new VBox();
         GridPane root = new GridPane();
@@ -124,16 +130,16 @@ public class LuffarKlient extends Application {
                     circle.setStroke(black);
                     playButton.setGraphic(circle);
                     playButton.setDisable(true);
-                    System.out.println("button index +1= "+(arr.indexOf(playButton)+1));
-                    pServer.sendMessage(""+(arr.indexOf(playButton)+1));
+                    System.out.println("button index +1= " + (arr.indexOf(playButton) + 1));
+                    pServer.sendMessage("" + (arr.indexOf(playButton) + 1));
                 }
             });
 
         }
         btnNewGame.setOnAction(buttonConnectEventHandler);
 
-        scoreArea.getChildren().addAll(lblTurnNr, lblTime, lblPlayer1, lblPlayer2, txtChat,  txtSetName);
-        buttonArea.getChildren().addAll(btnNewGame,btnSetName, btnInfo, btnHighScore);
+        scoreArea.getChildren().addAll(lblTurnNr, lblTime, lblPlayer1, lblPlayer2, txtChat);
+        buttonArea.getChildren().addAll(btnNewGame, btnInfo, btnHighScore);
 
         GridPane.setMargin(buttonArea, new Insets(0, 0, 20, 0));
         GridPane.setMargin(playArea, new Insets(0, 10, 0, 0));
@@ -147,6 +153,25 @@ public class LuffarKlient extends Application {
         primaryStage.show();
 
     }
+
+    public void recMessage(String message) {
+        int pNumber, pIndex;
+
+        pNumber = message.charAt(0);
+        pIndex = Integer.parseInt(message.substring(1)) - 1;
+
+        pArr[pIndex] = pNumber;
+        if (pNumber == 1) {
+            Paint lightblue = Color.LIGHTBLUE;
+            Paint black = Color.BLACK;
+            Circle circle = new Circle(5, lightblue);
+            circle.setStroke(black);
+            arr.get(pIndex).setGraphic(circle);
+        } else if (pNumber == 2) {
+            arr.get(pIndex).setText("x");
+        }
+    }
+
     EventHandler<ActionEvent> buttonConnectEventHandler
             = new EventHandler<ActionEvent>() {
 
@@ -159,17 +184,20 @@ public class LuffarKlient extends Application {
 
 //			Kör igång en tråd för att kunna skriva till servern, klassen ser samma ut som serverns skrivar klass.			
                 pServer = new PrintServer(socket);
-                ReadServer rClient = new ReadServer(socket);
+                rServer = new ReadServer(socket);
                 Thread t1 = new Thread(pServer);
                 t1.start();
-                Thread t2 = new Thread(rClient);
+                Thread t2 = new Thread(rServer);
                 t2.start();
-
+                getName = new TextInputDialog();
+                Optional<String> result = getName.showAndWait();
+                playerName = result.get();
+                pServer.sendMessage(playerName);
             } //Denna catch-sats fångar exception från nästan alla rader i try-satsen, enkelt att göra men kanske inte så bra då det blir så generellt.
             catch (IOException e) {
                 System.out.println("Exception som kastades: " + e);
             }
-            
+
             btnNewGame.setDisable(true);
         }
     };
@@ -184,5 +212,3 @@ public class LuffarKlient extends Application {
     }
 
 }
-
-
