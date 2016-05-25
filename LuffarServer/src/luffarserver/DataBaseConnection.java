@@ -160,48 +160,27 @@ public class DataBaseConnection {
         
     }
     
-    //this method reads the users latest balance saved in the table saldo in the database
-    public int readBalance(){
-        
-        int bal=0;
-        
-        //calling the connectDB-method to establish the connection to the database
-        conn = ConnectDB();
-        
-        //the query for reading the balance
-        String sql="SELECT saldoVarde FROM saldo WHERE saldoId = 1" ;
-        
-        try{
-            //prepare statement and execute query
-            pre = conn.prepareStatement(sql);
-            rs = pre.executeQuery();
-            
-            if(rs.next()){
-               
-                System.out.println(rs.getString(1));
-               
-                //get the result from the query and store it in the bal-variable
-                bal = Integer.parseInt(rs.getString(1));
-               
-            }
-            else{
-                System.out.println("Access denied");
-            }
-            
-           conn.close();
-            
-        }
-        catch(Exception e){
-            
-            System.out.println("Error: "+e);
-	}
-        
-        
-        return bal;
-    }
+    
     
     //this method writes the users latest balance to the table saldo in the database after clicking the ratta-button
-    public void writeBalance(int balance){
+    public void writeHighScore(String username, int moveswon, String time){
+        
+        sql4="SELECT COUNT(*) FROM highscore;";
+            
+            try{
+                //prepare statement and execute query
+                pre = conn.prepareStatement(sql4);
+                rs = pre.executeQuery();
+           
+                if(rs.next()){
+                    highScoreTableLength = Integer.parseInt(rs.getString(1));
+                    System.out.println("count= " + highScoreTableLength);
+                }else{
+                    System.out.println("Access denied");
+                }
+            }catch(Exception e){
+                System.out.println("Error: "+e);
+            }
         
         //statement
         Statement stmt = null;
@@ -209,8 +188,10 @@ public class DataBaseConnection {
         //calling the connectDB-method to establish a connection
         conn = ConnectDB();
         
+        highScoreTableLength++;
+        
         //the query for update
-        String sql="UPDATE saldo SET saldoVarde = " + balance + " WHERE saldoId = 1" ;
+        String sql="insert into highscore values (" + highScoreTableLength + ",'" + username + "'," + moveswon + ",'" + time + "');" ;
         
         try{
             //statement and update-query
