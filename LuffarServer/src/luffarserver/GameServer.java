@@ -6,6 +6,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
@@ -166,14 +167,32 @@ public class GameServer implements Runnable{
                 }
                 
                 if(!name.equals("")){
-                    System.out.println("name is not empty");
+                    //System.out.println("name is not empty");
                     try (Scanner sc = new Scanner(connection.getInputStream())){
                         while(sc.hasNextLine()){
                             msgFromClient = sc.nextLine();
                             System.out.println("msgFromClient: " + msgFromClient);
+                            
+                            String serverMsg = playerNumber + msgFromClient;
+                            
+                            for(int y = 0 ; y < number ; y++){
+                                
+                                PrintWriter printWriter = new PrintWriter (v[y].connection.getOutputStream());
+                                printWriter.println(serverMsg);
+                                printWriter.flush();
+                                
+                            }
+                            
+                            
                         }
+                        Thread.sleep(100);
                     }
+                    catch (IOException e) {
+			e.printStackTrace();
+		}
                 }
+                
+                
                 
                 //thread wait 0.1 seconds
                  Thread.sleep(100);
