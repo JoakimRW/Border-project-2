@@ -125,7 +125,7 @@ public class LuffarKlient extends Application {
                 public void handle(MouseEvent e) {
                     System.out.println("Hello World!");
                     if (canClick != false) {
-                        playButton.setDisable(true);
+                        
                         System.out.println("button index +1= " + (arr.indexOf(playButton) + 1));
                         pServer.sendMessage(""+ playerNumber + (arr.indexOf(playButton) + 1));
                         canClick = false;
@@ -158,10 +158,11 @@ public class LuffarKlient extends Application {
 
         if (message != null) {
             int pNumber, pIndex;
+            System.out.println("MFS = " + message);
 
             pNumber = message.charAt(0);
-            pIndex = Integer.parseInt(message.substring(1)) - 1;
-
+            pIndex = Integer.parseInt(message.substring(1));
+            pIndex--;
             pArr[pIndex] = pNumber;
 
             if (pNumber == 1) {
@@ -207,18 +208,26 @@ public class LuffarKlient extends Application {
                 Thread t2 = new Thread(rServer);
                 t2.start();
                 getName = new TextInputDialog();
+                getName.setTitle("Name");
+                getName.setContentText("Please fill in your name");
                 Optional<String> result = getName.showAndWait();
                 playerName = result.get();
                 pServer.sendMessage(playerName);
 
                 while (playerNumber == 0) {
                     if (rServer.GetMessageFromServer() != null) {
-                        playerNumber = rServer.GetMessageFromServer().charAt(0);
+                        playerNumber = Integer.parseInt(rServer.GetMessageFromServer());
                         System.out.println("Har fått spelarnummer = " + playerNumber);
+                        if(playerNumber == 1){
+                            canClick = true;
+                        }
+                        if(playerNumber == 2){
+                            canClick = false;
+                        }
                     }
                     System.out.println("Väntar på Spelarnummer");
                 }
-
+                btnNewGame.setDisable(true);
             } //Denna catch-sats fångar exception från nästan alla rader i try-satsen, enkelt att göra men kanske inte så bra då det blir så generellt.
             catch (IOException e) {
                 System.out.println("Exception som kastades: " + e);
