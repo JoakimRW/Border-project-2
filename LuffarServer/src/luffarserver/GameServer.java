@@ -178,12 +178,13 @@ public class GameServer implements Runnable{
                             msgFromClient = sc.nextLine();
                             System.out.println("msgFromClient: " + msgFromClient);
                             
-                            String serverMsg = playerNumber + msgFromClient;
+                            
+                            //String serverMsg = playerNumber + msgFromClient;
                             
                             for(int y = 0 ; y < number ; y++){
                                 
                                 PrintWriter printWriter = new PrintWriter (v[y].connection.getOutputStream());
-                                printWriter.println(serverMsg);
+                                printWriter.println(msgFromClient);
                                 printWriter.flush();
                                 
                             }
