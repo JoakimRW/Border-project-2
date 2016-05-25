@@ -20,15 +20,13 @@ class PrintServer implements Runnable {
 
     private Socket connection;
     private boolean sm= false;
-    private String message;
 
     public PrintServer(Socket connection) {
         this.connection = connection;
     }
-    public void sendMessage(String message){
+    public void sendMessage(){
         System.out.println("metod kallad");
         sm=true;
-        this.message=message;
     }
     @Override
     public void run() {
@@ -48,7 +46,7 @@ class PrintServer implements Runnable {
                 }
                 if(sm==true){
                     System.out.println("if sats");
-                  pWriter.println(message);
+                  pWriter.println("test");
                   pWriter.flush();
                   sm=false;
                 }
