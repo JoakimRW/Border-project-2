@@ -48,12 +48,8 @@ import javafx.stage.Stage;
  */
 public class LuffarKlient extends Application {
 
-    Button btnNewGame;
-    TextArea textAddress;
-    Label textPort;
+    Button btnNewGame,btnInfo,btnHighScore,btnSetName;
     TextArea txtChat;
-    Button btnInfo;
-    Button btnHighScore;
     GridPane playArea;
     Label lblTurnNr;
     Label lblTime;
@@ -62,21 +58,21 @@ public class LuffarKlient extends Application {
     VBox scoreArea;
     VBox buttonArea;
     GridPane root;
-    TextField textResponse;
-    //ClientComm clientComm;
+    TextField txtSetName;
     String adress = "localhost";
     int portNumber = 3004;
     PrintServer pServer;
+    Boolean player1,player2;
+    
 
     @Override
     public void start(Stage primaryStage) {
         btnNewGame = new Button("New Game");
         btnInfo = new Button("Help");
         btnHighScore = new Button("High Score");
+        btnSetName = new Button("Set Name");
         playArea = new GridPane();
-        textAddress = new TextArea("localhost");
-        textPort = new Label("3004");
-        textResponse = new TextField();
+        txtSetName = new TextField();
         int rows = 1;
         int rowcheck = 20;
         int cols = 1;
@@ -93,6 +89,7 @@ public class LuffarKlient extends Application {
         scoreArea = new VBox();
 
         btnNewGame.setMaxWidth(Double.MAX_VALUE);
+        btnSetName.setMaxWidth(Double.MAX_VALUE);
         btnInfo.setMaxWidth(Double.MAX_VALUE);
         btnHighScore.setMaxWidth(Double.MAX_VALUE);
 
@@ -127,22 +124,23 @@ public class LuffarKlient extends Application {
                     circle.setStroke(black);
                     playButton.setGraphic(circle);
                     playButton.setDisable(true);
-                    pServer.sendMessage();
+                    System.out.println("button index +1= "+(arr.indexOf(playButton)+1));
+                    pServer.sendMessage(""+(arr.indexOf(playButton)+1));
                 }
             });
 
         }
         btnNewGame.setOnAction(buttonConnectEventHandler);
 
-        scoreArea.getChildren().addAll(lblTurnNr, lblTime, lblPlayer1, lblPlayer2, txtChat, textAddress, textPort, textResponse);
-        buttonArea.getChildren().addAll(btnNewGame, btnInfo, btnHighScore);
+        scoreArea.getChildren().addAll(lblTurnNr, lblTime, lblPlayer1, lblPlayer2, txtChat,  txtSetName);
+        buttonArea.getChildren().addAll(btnNewGame,btnSetName, btnInfo, btnHighScore);
 
         GridPane.setMargin(buttonArea, new Insets(0, 0, 20, 0));
         GridPane.setMargin(playArea, new Insets(0, 10, 0, 0));
         root.add(buttonArea, 1, 1);
         root.add(playArea, 1, 2);
         root.add(scoreArea, 2, 2);
-        Scene scene = new Scene(root, 1300, 650);
+        Scene scene = new Scene(root, 1300, 700);
 
         primaryStage.setTitle("TickTackToe");
         primaryStage.setScene(scene);
@@ -155,7 +153,6 @@ public class LuffarKlient extends Application {
         @Override
         public void handle(ActionEvent event) {
             System.out.println("Klienten startar");
-//		
             try {
 //			Skapar en anslutning mot en server, denna kan kasta ett par exceptions (vilka alla är eller ligger under IOException)
                 Socket socket = new Socket(adress, portNumber);
