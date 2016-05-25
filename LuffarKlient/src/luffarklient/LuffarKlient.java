@@ -70,6 +70,7 @@ public class LuffarKlient extends Application {
     String playerName;
     ArrayList<Button> arr;
     private int[] pArr = new int[400];
+    VarHolder varHolder = new VarHolder();
 
     @Override
     public void start(Stage primaryStage) {
@@ -129,7 +130,7 @@ public class LuffarKlient extends Application {
                         System.out.println("button index +1= " + (arr.indexOf(playButton) + 1));
                         pServer.sendMessage("" + playerNumber + (arr.indexOf(playButton) + 1));
                         canClick = false;
-                        recMessage(rServer.GetMessageFromServer());
+                        recMessage();
                         System.out.println("" + rServer.GetMessageFromServer());
                     }
                 }
@@ -154,18 +155,19 @@ public class LuffarKlient extends Application {
 
     }
 
-    public void recMessage(String message) {
-        System.out.println("MFS = " + message);
-        while (message == null) {
+    public void recMessage() {
+        System.out.println("MFS = " + varHolder.getMessage());
+        while (varHolder.getMessage() == null) {
             System.out.println("Väntar på meddelande");
         }
-        System.out.println("MFS After = " + message);
+        System.out.println("MFS After = " + varHolder.getMessage());
         
             int pNumber, pIndex;
 
-            pNumber = message.charAt(0);
-            pIndex = Integer.parseInt(message.substring(1)) - 1;
-            pIndex--;
+            pNumber = Integer.parseInt(varHolder.getMessage().substring(0, 1));
+            System.out.println("pNumber = " + pNumber);
+            pIndex = Integer.parseInt(varHolder.getMessage().substring(1)) - 1;
+            System.out.println("pIndex = " + pIndex);
             pArr[pIndex] = pNumber;
             rServer.resetMessageFromServer();
             if (pNumber == 1) {
@@ -202,7 +204,7 @@ public class LuffarKlient extends Application {
 
 //			Kör igång en tråd för att kunna skriva till servern, klassen ser samma ut som serverns skrivar klass.			
                 pServer = new PrintServer(socket);
-                rServer = new ReadServer(socket);
+                rServer = new ReadServer(socket,varHolder);
                 Thread t1 = new Thread(pServer);
                 t1.start();
                 Thread t2 = new Thread(rServer);
@@ -216,8 +218,8 @@ public class LuffarKlient extends Application {
 
                 while (playerNumber == 0) {
                     System.out.println("Väntar på Spelarnummer");
-                    if (rServer.GetMessageFromServer() != null) {
-                        playerNumber = Integer.parseInt(rServer.GetMessageFromServer());
+                    if (varHolder.getMessage() != null) {
+                        playerNumber = Integer.parseInt(varHolder.getMessage());
                         System.out.println("Har fått spelarnummer = " + playerNumber);
                         if (playerNumber == 1) {
                             canClick = true;
@@ -225,7 +227,7 @@ public class LuffarKlient extends Application {
                         if (playerNumber == 2) {
                             canClick = false;
                         }
-                        rServer.resetMessageFromServer();
+                        varHolder.setMessage(null);
                         System.out.println("Message is reset = " + rServer.GetMessageFromServer());
                     }
 

@@ -20,9 +20,11 @@ public class ReadServer implements Runnable {
 
     private Socket connection;
     private String msgFromServer;
+    private VarHolder varHolder;
 
-    public ReadServer(Socket connection) {
+    public ReadServer(Socket connection,VarHolder varHolder) {
         this.connection = connection;
+        this.varHolder = varHolder;
     }
 
     public void resetMessageFromServer() {
@@ -45,9 +47,9 @@ public class ReadServer implements Runnable {
 
             while (reader.hasNextLine()) {
 //				nextLine kastar exception men borde inte hända då vi kollar om det finns en ny rad varje gång, innan de läses.
-                System.out.println("readServer before = " + msgFromServer);
-                msgFromServer = reader.nextLine();
-                System.out.println("readserver = " + msgFromServer);
+                System.out.println("readServer before = " + varHolder.getMessage());
+                varHolder.setMessage(reader.nextLine());
+                System.out.println("readserver = " + varHolder.getMessage());
 
             }
         } catch (IOException ex) {
