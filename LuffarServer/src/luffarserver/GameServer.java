@@ -59,6 +59,7 @@ public class GameServer implements Runnable{
     private boolean flag = false;
 		
     String msgReply = "250";
+    String msgFromClient = "";
     
     public GameServer(){
         //if this is the first time the quiz runs, start the serverloop
@@ -162,6 +163,16 @@ public class GameServer implements Runnable{
                     //set flag to true 
                     flag = true;
                     
+                }
+                
+                if(!name.equals("")){
+                    System.out.println("name is not empty");
+                    try (Scanner sc = new Scanner(connection.getInputStream())){
+                        while(sc.hasNextLine()){
+                            msgFromClient = sc.nextLine();
+                            System.out.println("msgFromClient: " + msgFromClient);
+                        }
+                    }
                 }
                 
                 //thread wait 0.1 seconds
