@@ -8,9 +8,13 @@ package luffarklient;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.Button;
 
 /**
  *
@@ -21,10 +25,12 @@ public class ReadServer implements Runnable {
     private Socket connection;
     private String msgFromServer;
     private VarHolder varHolder;
+    private ArrayList<Button> arr;
 
     public ReadServer(Socket connection,VarHolder varHolder) {
         this.connection = connection;
         this.varHolder = varHolder;
+        this.arr = arr;
     }
 
     public void resetMessageFromServer() {
@@ -57,5 +63,7 @@ public class ReadServer implements Runnable {
         }
 
     }
+
+    
 
 }
