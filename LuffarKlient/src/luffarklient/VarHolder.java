@@ -11,10 +11,16 @@ import java.util.Observable;
  *
  * @author JRW
  */
-public class VarHolder extends Observable {
+public class VarHolder extends Observable implements Runnable {
     
     private String message,playerName;
     private int playerNumber;
+    private boolean cValue =false;
+  
+    
+    public VarHolder(){
+        
+    }
 
     public String getPlayerName() {
         return playerName;
@@ -44,6 +50,23 @@ public class VarHolder extends Observable {
             notifyObservers();
             System.out.println("luffarklient.VarHolder.setMessage()");
         }
+    }
+
+    @Override
+    public void run() {
+        while(true){
+            
+            if (cValue == true){
+                
+                
+                
+            }
+            
+            
+            
+        }
+        
+        
     }
     
     

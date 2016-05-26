@@ -8,11 +8,14 @@ package luffarklient;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -61,7 +64,7 @@ public class LuffarKlient extends Application implements Observer {
     ArrayList<Button> arr;
     private int[] pArr = new int[400];
     VarHolder varHolder = new VarHolder();
-    Button playButton;
+    //Button playButton;
     
 
     @Override
@@ -83,7 +86,8 @@ public class LuffarKlient extends Application implements Observer {
         lblPlayer2 = new Label("Player 2 : ");
 
         txtChat = new TextArea();
-        arr = new ArrayList<>();
+        
+        arr = new ArrayList<Button>();
 
         buttonArea = new VBox();
         GridPane root = new GridPane();
@@ -97,7 +101,7 @@ public class LuffarKlient extends Application implements Observer {
         playArea.setMinSize(300, 300);
         
         for (int t = 0; t < 400; t++) {
-            playButton = new Button();
+            Button playButton = new Button();
             playButton.setPrefWidth(40);
             playButton.setMaxWidth(Double.MAX_VALUE);
             playButton.setStyle(""
@@ -119,22 +123,31 @@ public class LuffarKlient extends Application implements Observer {
                 @Override
                 public void handle(MouseEvent e) {
                     System.out.println("Hello World!");
+                    int k = 500;
+                    for(int n = 0 ; n < 400 ; n++){
+                    if(e.getSource() == arr.get(n)){
+                        k=n;
+                    }}
                     if (canClick == true && playerNumber == 1) {
 
-                        System.out.println("button index +1= " + (arr.indexOf(playButton) + 1));
-                        pServer.sendMessage("" + playerNumber + (arr.indexOf(playButton) + 1));
+                        System.out.println("button index +1= " + (k + 1));
+                        pServer.sendMessage("" + playerNumber + (k + 1));
+                        playButton.fire();
                         //recMessage();
                         System.out.println("" + rServer.GetMessageFromServer());
                     } else if (canClick == true && playerNumber == 2) {
                         System.out.println("Inte min tur men Cirklar");
+                        playButton.fire();
                         //recMessage();
                         canClick = false;
                     } else if (canClick == false && playerNumber == 2) {
-                        System.out.println("button index +1= " + (arr.indexOf(playButton) + 1));
-                        pServer.sendMessage("" + playerNumber + (arr.indexOf(playButton) + 1));
+                        System.out.println("button index +1= " + (k + 1));
+                        pServer.sendMessage("" + playerNumber + (k + 1));
+                        playButton.fire();
                         //recMessage();
                     } else if (canClick == false && playerNumber == 1) {
                         System.out.println("player 2 s tur men jag kryssar");
+                        playButton.fire();
                         //recMessage();
                         canClick = true;
                     }
@@ -196,13 +209,12 @@ public class LuffarKlient extends Application implements Observer {
 
 //			Kör igång en tråd för att kunna skriva till servern, klassen ser samma ut som serverns skrivar klass.			
                 pServer = new PrintServer(socket);
-                rServer = new ReadServer(socket, varHolder);
+                rServer = new ReadServer(socket, varHolder,arr);
                 Thread t1 = new Thread(pServer);
                 t1.start();
                 Thread t2 = new Thread(rServer);
                 t2.start();
-                //Thread t3 = new Thread(varHolder);
-                //t3.start();
+                
                 getName = new TextInputDialog();
                 getName.setTitle("Name");
                 getName.setContentText("Please fill in your name");
@@ -245,7 +257,7 @@ public class LuffarKlient extends Application implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         System.out.println("luffarklient.LuffarKlient.update()");
-       this.recMessage();
+       //this.recMessage();
         
     }
 
