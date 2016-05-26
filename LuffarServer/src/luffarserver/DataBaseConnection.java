@@ -10,17 +10,18 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Reza
  */
 
-//this class handles the readWrite-part to the database, it reads the database for team-specification (from the tables klubblag and landslag) 
-//and stores it in an arraylist and sends the list to the calling method, it has the method openread that reads the desired database
-//this class has also methods for reading and writing the users balance to and from the table saldo
+
 public class DataBaseConnection {
     
     //instance variables
@@ -40,7 +41,7 @@ public class DataBaseConnection {
     private int highScoreTableLength = 0;
     
     
-    public ArrayList<HighScore> openRead(){
+    public ArrayList<HighScore> readDB(){
        
         
         //calling the method connectDB 
@@ -162,8 +163,13 @@ public class DataBaseConnection {
     
     
     
-    //this method writes the users latest balance to the table saldo in the database after clicking the ratta-button
+    
     public void writeHighScore(String username, int moveswon, String time){
+        
+        //calling the connectDB-method to establish a connection
+        conn = ConnectDB();
+        
+        arraylist = readDB();
         
         sql4="SELECT COUNT(*) FROM highscore;";
             
@@ -181,31 +187,74 @@ public class DataBaseConnection {
             }catch(Exception e){
                 System.out.println("Error: "+e);
             }
+            
+        highScoreTableLength++;
+        
+        HighScore highscore = new HighScore();
+        highscore.setId(highScoreTableLength);
+        highscore.setUser(username);
+        highscore.setMoves(moveswon);
+        highscore.setTime(time);
+        arraylist.add(highscore);
+            
+        arraylist = sortHighScore(arraylist);
         
         //statement
         Statement stmt = null;
          
-        //calling the connectDB-method to establish a connection
-        conn = ConnectDB();
-        
-        highScoreTableLength++;
-        
-        //the query for update
-        String sql="insert into highscore values (" + highScoreTableLength + ",'" + username + "'," + moveswon + ",'" + time + "');" ;
-        
-        try{
-            //statement and update-query
-            stmt = conn.createStatement();
-            stmt.executeUpdate(sql);
+        for(int x = 0 ; x < 5 ; x++){
             
-            conn.close();
+            conn = ConnectDB();
             
+            String sqlDel="DELETE FROM highscore " + "WHERE id = " + (x+1) ;
+            System.out.println(sqlDel);
+        
+            try{
+                
+                stmt = conn.createStatement();
+                stmt.executeUpdate(sqlDel);
+           
+                
+            }catch(Exception e){
+                System.out.println("Error: "+e);
+            }
+            
+            String sql="insert into highscore values (" + (x+1) + ",'" + arraylist.get(x).getUser() + "'," + arraylist.get(x).getMovesWon() + ",'" + arraylist.get(x).getTime() + "');" ;
+            //System.out.println(sql);
+        
+            try{
+                //statement and update-query
+                stmt = conn.createStatement();
+                stmt.executeUpdate(sql);
+                conn.close();
+            }
+            catch(Exception e){
+                System.out.println("Error: "+e);
+            
+            }
         }
-        catch(Exception e){
-            System.out.println("Error: "+e);
-            
-	}
         
+    }
+    
+    public ArrayList<HighScore> sortHighScore(ArrayList<HighScore> arrlist){
+        
+        arraylist = arrlist;
+        int indexOfHighest = 0;
+        
+        for(int i = 0 ; i < 6 ; i++){
+            
+            if(arraylist.get(i).getMovesWon() > arraylist.get(indexOfHighest).getMovesWon()){
+                
+                indexOfHighest = i;
+                System.out.println("indexofhighest = " + indexOfHighest);
+            }
+           
+        }
+        
+        arraylist.remove(indexOfHighest);
+        
+        
+        return arraylist;
     }
     
     
