@@ -191,6 +191,14 @@ public class GameServer implements Runnable{
                             
                             for(int y = 0 ; y < number ; y++){
                                 
+                                PrintWriter printWriter = new PrintWriter (v[y].connection.getOutputStream());
+                                printWriter.println(msgFromClient);
+                                printWriter.flush();
+                                
+                            }
+                            
+                            for(int y = 0 ; y < number ; y++){
+                                
                                 if(result.equals("5 in row")){
                                     msgFromClient = pNumber + result;
                                 }
