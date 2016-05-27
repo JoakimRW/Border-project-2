@@ -121,6 +121,8 @@ public class ReadServer implements Runnable {
                             ln.setCanClicked(true);
                         }
                     }
+                }else{
+                    second = true;
                 }
                 if (second == true) {
                     while (reader.hasNextLine()) {
