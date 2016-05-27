@@ -52,8 +52,11 @@ public class LuffarNorth extends JPanel implements ActionListener{
         
         
         btnInfo = new JButton("Info");
-        btnHighScore = new JButton("HighScore");
         
+        btnInfo.addActionListener(this);
+        
+        btnHighScore = new JButton("HighScore");
+        btnHighScore.setEnabled(false);
         btnNewGame.setPreferredSize(new Dimension(850,50));
         btnInfo.setPreferredSize(new Dimension(850,50));
         btnHighScore.setPreferredSize(new Dimension(850,50));
@@ -85,6 +88,14 @@ public class LuffarNorth extends JPanel implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent ae) {
+        
+        if(ae.getSource() == btnInfo){
+            JOptionPane.showMessageDialog(null,
+                                    "The goal with Tic Tac Toe is to get 5 marks in a row of the same type \n"
+                                    + "each player gets one type of mark, the first gets Circles O and \n"
+                                    + "the second gets crosses X, you do this in a field of play consisting of 20*20 squares,\n"
+                                    + "you cannot mark a square you or your opponent has already marked and you take turns marking \n");
+        }
         
         if(ae.getSource() == btnNewGame){
             
@@ -127,6 +138,7 @@ public class LuffarNorth extends JPanel implements ActionListener{
                     }
 
                 }
+                btnHighScore.setEnabled(true);
                 btnNewGame.setEnabled(false);
             } //Denna catch-sats fångar exception från nästan alla rader i try-satsen, enkelt att göra men kanske inte så bra då det blir så generellt.
             catch (IOException e) {
