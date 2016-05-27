@@ -21,7 +21,7 @@ public class GameHandler {
         }
     }
     
-    public void checkWin(int boxClicked, int playerNumber){
+    public String checkWin(int boxClicked, int playerNumber){
         
         orgBoxClicked = boxClicked;
         
@@ -453,14 +453,16 @@ public class GameHandler {
       String result = "";
       
       if((leftright >= 4) || (updown >= 4) || (diagonal1 >= 4) || (diagonal2 >= 4)){
-          result = "5 i rad";
+          result = "5 in row";
       }
       else{
-          result = "ingen vinst";
+          result = "no won";
       }
      
         
       System.out.println(result);
+      
+      return result;
                 
     }
     

@@ -62,6 +62,9 @@ public class GameServer implements Runnable{
     String msgReply = "250";
     String msgFromClient = "";
     
+    public GameHandler gameHandler = new GameHandler();
+    
+    
     public GameServer(){
         //if this is the first time the quiz runs, start the serverloop
         if(number == 0){
@@ -178,11 +181,19 @@ public class GameServer implements Runnable{
                             msgFromClient = sc.nextLine();
                             System.out.println("msgFromClient: " + msgFromClient);
                             
+                            int pNumber = Integer.parseInt(msgFromClient.substring(0, 1));
+                            int pIndex = Integer.parseInt(msgFromClient.substring(1));
+                            
+                            String result = gameHandler.checkWin(pIndex, pNumber);
+                            
                             
                             //String serverMsg = playerNumber + msgFromClient;
                             
                             for(int y = 0 ; y < number ; y++){
                                 
+                                if(result.equals("5 in row")){
+                                    msgFromClient = pNumber + result;
+                                }
                                 PrintWriter printWriter = new PrintWriter (v[y].connection.getOutputStream());
                                 printWriter.println(msgFromClient);
                                 printWriter.flush();
