@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane  fx:id="gameArea" gridLinesVisible="true"  xmlns:fx="http://javafx.com/fxml/1"   id="GridPane" prefHeight="700" prefWidth="1300"  fx:controller="javafx.graphtest.FXMLDocumentController">
+    <children>
+        <HBox id="buttonArea"  fx:id="buttonArea"  >
+            <children>
+                <Button text="New Game" fx:id="btnNewGame" onAction="#handleButtonAction"  /> 
+                <Button text="Info" fx:id="btnInfo" /> 
+                <Button text="High Score" fx:id="btnHighScore" /> 
+            </children>
+        </HBox>
+        <VBox id="scoreArea" fx:id="scoreArea"   >
+            <children>
+                <Label fx:id="lblPlay1" text="Player 1 : "/>
+                <Label fx:id="lblPlay2" text="Player 2 : "/>
+            </children>
+        </VBox>
+        <GridPane  fx:id="playArea" />
+    </children>
+</GridPane>

@@ -6,6 +6,8 @@
 package luffark;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -27,6 +29,7 @@ public class LuffarK {
     VarHolder varHolder = new VarHolder();
     int playerNumber;
     boolean canClick ;
+    Dimension prefSize;
     
     
     
@@ -34,6 +37,8 @@ public class LuffarK {
         
         for(int x = 0 ; x<400 ; x++){
             buttonArray[x] = new JButton();
+            buttonArray[x].setFocusPainted(false);
+            buttonArray[x].setBackground(Color.CYAN);
         }
         
         
