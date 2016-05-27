@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -74,6 +75,9 @@ public class ReadServer implements Runnable {
 
                 if (varHolder.getMessage() != null && varHolder.getMessage().substring(1).equals("5 in row")) {
                     System.out.println("Spelare " + varHolder.getMessage().charAt(0) + " Vann");
+                    JOptionPane.showMessageDialog(null,
+                            "Spelare " + varHolder.getMessage().charAt(0) + " Vann");
+
                     break;
                 }
 
@@ -121,7 +125,7 @@ public class ReadServer implements Runnable {
                             ln.setCanClicked(true);
                         }
                     }
-                }else{
+                } else {
                     second = true;
                 }
                 if (second == true) {

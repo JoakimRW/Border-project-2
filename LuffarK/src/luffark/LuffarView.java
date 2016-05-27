@@ -31,7 +31,7 @@ public class LuffarView extends JFrame{
         //settings of the frame
         //this.setResizable(false);
         setLocation(400,50);
-        setSize(1200,750);
+        setSize(1216,1000);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);
     }
