@@ -56,6 +56,8 @@ public class LuffarNorth extends JPanel implements ActionListener{
         btnInfo.addActionListener(this);
         
         btnHighScore = new JButton("HighScore");
+        btnHighScore.addActionListener(this);
+        
         btnHighScore.setEnabled(false);
         btnNewGame.setPreferredSize(new Dimension(850,50));
         btnInfo.setPreferredSize(new Dimension(850,50));
@@ -147,6 +149,15 @@ public class LuffarNorth extends JPanel implements ActionListener{
             
         }
         
+        if(ae.getSource() == btnHighScore){
+            /*JOptionPane.showMessageDialog(null,
+                                    "The goal with Tic Tac Toe is to get 5 marks in a row of the same type \n"
+                                    + "each player gets one type of mark, the first gets Circles O and \n"
+                                    + "the second gets crosses X, you do this in a field of play consisting of 20*20 squares,\n"
+                                    + "you cannot mark a square you or your opponent has already marked and you take turns marking \n");
+            */
+            pServer.sendMessage(playerNumber + "highscore");
+        }
         
     }
     

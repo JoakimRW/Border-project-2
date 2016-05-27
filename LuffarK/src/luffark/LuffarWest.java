@@ -73,7 +73,7 @@ public class LuffarWest extends JPanel implements ActionListener {
         }
 
         System.out.println(k);
-        buttonArray[k].removeActionListener(this);
+        //buttonArray[k].removeActionListener(this);
         System.out.println("canclick= " + ln.getCanClicked());
         System.out.println("playernumber = " + ln.getPlayerNumber());
         canClick = ln.getCanClicked();

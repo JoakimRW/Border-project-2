@@ -72,6 +72,19 @@ public class ReadServer implements Runnable {
 
             while (true) {
                 System.out.println("while true satsen snurrar");
+                
+                
+                //if (varHolder.getMessage() != null && varHolder.getMessage().substring(1,11).equals("highscore")) {
+                if (varHolder.getMessage() != null && varHolder.getMessage().length() > 10) {
+                    System.out.println("highscore = " + varHolder.getMessage().substring(10));
+                    JOptionPane.showMessageDialog(null,
+                            varHolder.getMessage().substring(10));
+
+                    
+                }
+                else{
+                    
+                }
 
                 if (varHolder.getMessage() != null && varHolder.getMessage().substring(1).equals("5 in row")) {
                     System.out.println("Spelare " + varHolder.getMessage().charAt(0) + " Vann");

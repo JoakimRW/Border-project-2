@@ -9,6 +9,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -182,6 +183,27 @@ public class GameServer implements Runnable{
                             System.out.println("msgFromClient: " + msgFromClient);
                             
                             int pNumber = Integer.parseInt(msgFromClient.substring(0, 1));
+                            String messageValue = msgFromClient.substring(1);
+                            
+                            if(messageValue.equals("highscore")){
+                                
+                                DataBaseConnection db = new DataBaseConnection();
+                                ArrayList<HighScore> arraylist = new ArrayList<HighScore>();
+                                arraylist = db.readDB();
+                                String highScoreString = "";
+                                for(int i = 0 ; i < 5 ; i++){
+                                    highScoreString = highScoreString + (i+1) + "  "+ arraylist.get(i).getUser() + " " + arraylist.get(i).getMovesWon()+ " "+ arraylist.get(i).getTime() + " ";
+                                }
+                                System.out.println(highScoreString);
+                                PrintWriter printWriter = new PrintWriter (v[pNumber-1].connection.getOutputStream());
+                                printWriter.println(pNumber + "highscore" + highScoreString);
+                                printWriter.flush();
+                                
+                            }
+                            else{
+                                
+                            
+                            //int pNumber = Integer.parseInt(msgFromClient.substring(0, 1));
                             int pIndex = Integer.parseInt(msgFromClient.substring(1));
                             
                             String result = gameHandler.checkWin(pIndex, pNumber);
@@ -207,7 +229,7 @@ public class GameServer implements Runnable{
                                 printWriter.flush();
                                 
                             }
-                            
+                            }
                             
                         }
                         Thread.sleep(100);
