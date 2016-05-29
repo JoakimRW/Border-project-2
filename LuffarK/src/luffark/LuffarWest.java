@@ -13,6 +13,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
@@ -30,8 +31,10 @@ public class LuffarWest extends JPanel implements ActionListener {
     boolean canClick;
     JButton[] buttonArray;
     LuffarNorth ln;
+    JLabel dragLabel;
+    JLabel timeLabel;
 
-    public LuffarWest(JButton[] arr, boolean canClick, int playerNumber, PrintServer pServer, ReadServer rServer, VarHolder varHolder, LuffarNorth ln) {
+    public LuffarWest(JButton[] arr, boolean canClick, int playerNumber, PrintServer pServer, ReadServer rServer, VarHolder varHolder, LuffarNorth ln, JLabel dragLabel,JLabel timeLabel) {
 
         this.buttonArray = arr;
         this.canClick = canClick;
@@ -40,6 +43,8 @@ public class LuffarWest extends JPanel implements ActionListener {
         this.rServer = rServer;
         this.varHolder = varHolder;
         this.ln = ln;
+        this.dragLabel = dragLabel;
+        this.timeLabel = timeLabel;
 
         GridBagLayout gr = new GridBagLayout();
 

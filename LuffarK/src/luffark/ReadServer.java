@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 /**
@@ -32,17 +33,20 @@ public class ReadServer implements Runnable {
     int pNumber, pIndex;
     boolean first = true, second = true;
     LuffarNorth ln;
+    boolean hc = false;
+    JLabel dragLabel;
 
     public ReadServer() {
         //this.ln = ln;
 
     }
 
-    public void setSocketVB(Socket connection, VarHolder varHolder, JButton[] arr, LuffarNorth ln) {
+    public void setSocketVB(Socket connection, VarHolder varHolder, JButton[] arr, LuffarNorth ln, JLabel dragLabel) {
         this.connection = connection;
         this.varHolder = varHolder;
         this.arr = arr;
         this.ln = ln;
+        this.dragLabel = dragLabel;
     }
 
     public void resetMessageFromServer() {
@@ -75,11 +79,27 @@ public class ReadServer implements Runnable {
                 
                 
                 //if (varHolder.getMessage() != null && varHolder.getMessage().substring(1,11).equals("highscore")) {
-                if (varHolder.getMessage() != null && varHolder.getMessage().length() > 10) {
+                if (varHolder.getMessage() != null && varHolder.getMessage().length() > 10 && hc == false) {
                     System.out.println("highscore = " + varHolder.getMessage().substring(10));
+                    
+                    String hcm = varHolder.getMessage().substring(10);
+                    String output = "";
+                    output = "Id    Namn    Antal-drag  Tid" + "\n";
+                    char[] charArray = hcm.toCharArray();
+                    int charArrayLength = charArray.length;
+                    
+                    for(int a = 0; a<charArrayLength ; a++){
+                        if(charArray[a] == ','){
+                            output += "\n";
+                        }
+                        else{
+                            output += charArray[a];
+                        }
+                    }
+                    
                     JOptionPane.showMessageDialog(null,
-                            varHolder.getMessage().substring(10));
-
+                            output);
+                    hc = true;
                     
                 }
                 else{
@@ -88,9 +108,10 @@ public class ReadServer implements Runnable {
 
                 if (varHolder.getMessage() != null && varHolder.getMessage().substring(1).equals("5 in row")) {
                     System.out.println("Spelare " + varHolder.getMessage().charAt(0) + " Vann");
+                    ln.setTimer().stop();
                     JOptionPane.showMessageDialog(null,
                             "Spelare " + varHolder.getMessage().charAt(0) + " Vann");
-
+                    
                     break;
                 }
 
@@ -98,11 +119,14 @@ public class ReadServer implements Runnable {
                     System.out.println("getmessage = " + varHolder.getMessage());
                     pNumber = Integer.parseInt(varHolder.getMessage().substring(0, 1));
                     System.out.println("pNumber = " + pNumber);
-
-                    pIndex = Integer.parseInt(varHolder.getMessage().substring(1)) - 1;
+                    
+                    if(hc == false){
+                        pIndex = Integer.parseInt(varHolder.getMessage().substring(1)) - 1;
+                    }
+                    
                     System.out.println("pIndex = " + pIndex);
                 }
-                if (varHolder.getMessage() != null && varHolder.getMessage().length() > 1 && arr[pIndex].getText() != "O" && arr[pIndex].getText() != "X") {
+                if (varHolder.getMessage() != null && varHolder.getMessage().length() > 1 && arr[pIndex].getText() != "O" && arr[pIndex].getText() != "X" && hc==false) {
 
                     if (pNumber == 1) {
                         arr[pIndex].setText("O");
@@ -137,6 +161,8 @@ public class ReadServer implements Runnable {
                         } else {
                             ln.setCanClicked(true);
                         }
+                        LuffarK.move++;
+                        dragLabel.setText("Move: " + LuffarK.move);
                     }
                 } else {
                     second = true;
@@ -148,10 +174,12 @@ public class ReadServer implements Runnable {
                         varHolder.setMessage(reader.nextLine());
                         System.out.println("readserver = " + varHolder.getMessage());
                         second = false;
+                        
                         break;
 
                     }
                 }
+                hc = false;
             }
         } catch (IOException ex) {
             Logger.getLogger(ReadServer.class.getName()).log(Level.SEVERE, null, ex);

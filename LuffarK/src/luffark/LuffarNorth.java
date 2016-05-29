@@ -6,6 +6,7 @@
 package luffark;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -13,11 +14,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
+import java.util.TimerTask;
 import javafx.scene.control.TextInputDialog;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 /**
  *
@@ -34,10 +40,15 @@ public class LuffarNorth extends JPanel implements ActionListener{
     int playerNumber;
     boolean canClick;
     JButton arr[];
+    JLabel dragLabel;
+    JLabel timeLabel;
+    double time= 0;
+    ActionListener taskPerformer ;
+    Timer timer=new Timer(1000,taskPerformer);
     
     
     
-    public LuffarNorth(JButton[] arr, boolean canClick, int playerNumber, PrintServer pServer, ReadServer rServer,VarHolder varHolder){
+    public LuffarNorth(JButton[] arr, boolean canClick, int playerNumber, PrintServer pServer, ReadServer rServer,VarHolder varHolder, JLabel dragLabel,JLabel timeLabel){
         
         this.arr = arr;
         this.canClick = canClick;
@@ -45,6 +56,8 @@ public class LuffarNorth extends JPanel implements ActionListener{
         this.pServer= pServer;
         this.rServer = rServer;
         this.varHolder = varHolder;
+        this.dragLabel = dragLabel;
+        this.timeLabel = timeLabel;
         
         btnNewGame = new JButton("New Game");
         btnNewGame.addActionListener(this);
@@ -86,6 +99,37 @@ public class LuffarNorth extends JPanel implements ActionListener{
         //con.insets = new Insets(10, 10, 10, 10);
         add(btnHighScore,con);
         
+        con = new GridBagConstraints();
+        con.gridy = 4;
+        con.gridx = 0;
+        con.insets = new Insets(10, 10, 10, 10);
+        add(dragLabel,con);
+        
+        con = new GridBagConstraints();
+        con.gridy = 5;
+        con.gridx = 0;
+        con.insets = new Insets(10, 10, 10, 10);
+        add(timeLabel,con);
+        
+        dragLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
+        timeLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
+        dragLabel.setText("Move: 1");
+        timeLabel.setText("00:00");
+        
+        timer = new Timer(1000, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (time <= 0) {
+                        time = System.currentTimeMillis();
+                    }
+                    long now = System.currentTimeMillis();
+                    long clockTime = (long) (now - time);
+                    
+                    SimpleDateFormat df = new SimpleDateFormat("mm:ss");
+                    timeLabel.setText(df.format(clockTime));
+                }
+            });
+        
     }
 
     @Override
@@ -108,7 +152,7 @@ public class LuffarNorth extends JPanel implements ActionListener{
 
 //			Kör igång en tråd för att kunna skriva till servern, klassen ser samma ut som serverns skrivar klass.			
                 pServer.setSocket(socket);
-                rServer.setSocketVB(socket, varHolder,arr,this);
+                rServer.setSocketVB(socket, varHolder,arr,this,dragLabel);
                 Thread t1 = new Thread(pServer);
                 t1.start();
                 Thread t2 = new Thread(rServer);
@@ -147,6 +191,12 @@ public class LuffarNorth extends JPanel implements ActionListener{
                 System.out.println("Exception som kastades: " + e);
             }
             
+            
+            timer.start();
+            
+  
+            
+            
         }
         
         if(ae.getSource() == btnHighScore){
@@ -172,5 +222,10 @@ public class LuffarNorth extends JPanel implements ActionListener{
     public void setCanClicked(boolean canClick){
         this.canClick = canClick;
     }
+    
+    public Timer setTimer(){
+        return timer;
+    }
+            
     
 }

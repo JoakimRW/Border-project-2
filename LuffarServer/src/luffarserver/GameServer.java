@@ -192,7 +192,7 @@ public class GameServer implements Runnable{
                                 arraylist = db.readDB();
                                 String highScoreString = "";
                                 for(int i = 0 ; i < 5 ; i++){
-                                    highScoreString = highScoreString + (i+1) + "  "+ arraylist.get(i).getUser() + " " + arraylist.get(i).getMovesWon()+ " "+ arraylist.get(i).getTime() + " ";
+                                    highScoreString = highScoreString + (i+1) + "   "+ arraylist.get(i).getUser() + "   " + arraylist.get(i).getMovesWon()+ "   "+ arraylist.get(i).getTime() + ",";
                                 }
                                 System.out.println(highScoreString);
                                 PrintWriter printWriter = new PrintWriter (v[pNumber-1].connection.getOutputStream());
