@@ -15,11 +15,18 @@ public class VarHolder implements Runnable {
     
     private String message,playerName;
     private int playerNumber;
-    private boolean cValue =false;
+    private boolean cValue =false, isAfterFirstGame = false;
   
     
     public VarHolder(){
         
+    }
+    
+    public Boolean getIsAfterFirstGame (){
+        return isAfterFirstGame;
+    }
+    public void setIsAfterFirstGame(boolean bol){
+        isAfterFirstGame = bol;
     }
 
     public String getPlayerName() {

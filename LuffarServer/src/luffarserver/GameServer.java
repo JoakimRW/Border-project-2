@@ -1,4 +1,3 @@
-
 package luffarserver;
 
 import java.io.DataInputStream;
@@ -18,242 +17,232 @@ import java.util.logging.Logger;
  *
  * @author Reza
  */
+public class GameServer implements Runnable {
 
-public class GameServer implements Runnable{
-    
 //instance variables
-    
     //this var holds the max number of players, if you change only this var the program works good 
     public static final int maxNumberOfClients = 2;
-    
+
     //this var holds the client iterator
     public static int x = 0;
-    
+
     //this is the current thread in this instance (for every client)
-    private Thread t ;
-    
+    private Thread t;
+
     //an array of this class 
     public static GameServer[] v = new GameServer[maxNumberOfClients];
-    
+
     //socket for every instance of quiz, that means a socket connection for every client
     public Socket connection;
-    
+
     //a stream for every client
-    private PrintStream writeToClient ;
-    
+    private PrintStream writeToClient;
+
     //another client iterator which is used in this and other classes
     public static int number = 0;
-    
+
     //an int that holds the current question number and is shared between the classes
     public static int questionNr = 1;
-    
+
     //an int used to count the current question number and is shared between the classes
     public static int test = 1;
-    
+
     //scanner for scanning the input from user
     private Scanner sc;
-    
+
     //name of the client in this instance of the quiz
     public String name = "";
     public int playerNumber = 0;
-    
+
     //this flag is used to determine when to send the welcome message to the clients newly connected
     private boolean flag = false;
-		
+
     String msgReply = "250";
     String msgFromClient = "";
-    
+
     public GameHandler gameHandler = new GameHandler();
-    
-    
-    public GameServer(){
+
+    public GameServer() {
         //if this is the first time the quiz runs, start the serverloop
-        if(number == 0){
-            
+        if (number == 0) {
+
             serverLoop();
-            
+
         }
     }
-    
-    public GameServer(Socket so, int plNum) throws IOException{
+
+    public GameServer(Socket so, int plNum) throws IOException {
         //set the quiz-instance socket
         this.connection = so;
         this.playerNumber = plNum;
-        
+
     }
-    
+
     //the loop-method which will run until the maximum number of clients is reached
-        public void serverLoop(){
-            
-            try {
-			
-			System.out.println("Startar server...");
-                        
-                        //start the server socket on port 3004
-			ServerSocket server = new ServerSocket(3004);
-			
-				
-                                //continue until the maximum number of clients is reached
-                                //x is the index of current client
-                                while(x<maxNumberOfClients){
-                                    
-                                    //create a new socket, connection
-                                    connection = new Socket();
-                                    
-                                    //accept the new socket by the server
-                                    connection = server.accept();
-                                    
-                                    //increase number
-                                    number++;
-                                    
-                                    
-                                    //print the client address
-                                    System.out.println(connection.getInetAddress());
-                                    
-                                    //a new instance of the quiz class
-                                    v[x] = new GameServer(connection,number);
-                                    
-                                    //new thread and sending the new quiz-object as a argument
-                                    t = new Thread(v[x]);
-                                    
-                                    //start the thread
-                                    t.start();
-                                    
-                                        
-                                    //increase x
-                                    x++;
-                                    
-                                }
-                                
-				
-		} 
-			
-                //handling exception
-		catch (IOException e) {
-			System.out.println("Exception som kastades: " + e);
-		}
-            
+    public void serverLoop() {
+
+        try {
+
+            System.out.println("Startar server...");
+
+            //start the server socket on port 3004
+            ServerSocket server = new ServerSocket(3004);
+
+            //continue until the maximum number of clients is reached
+            //x is the index of current client
+            while (x < maxNumberOfClients) {
+
+                //create a new socket, connection
+                connection = new Socket();
+
+                //accept the new socket by the server
+                connection = server.accept();
+
+                //increase number
+                number++;
+
+                //print the client address
+                System.out.println(connection.getInetAddress());
+
+                //a new instance of the quiz class
+                v[x] = new GameServer(connection, number);
+
+                //new thread and sending the new quiz-object as a argument
+                t = new Thread(v[x]);
+
+                //start the thread
+                t.start();
+
+                //increase x
+                x++;
+
+            }
+
+        } //handling exception
+        catch (IOException e) {
+            System.out.println("Exception som kastades: " + e);
         }
+
+    }
 
     //when the thread starts and runs, this will happen
     @Override
     public void run() {
-        
+
         //a loop that always runs
-        while(true){
+        while (true) {
             try {
-                
+
                 //if the client has been connected  
-                if(flag == false){
-                    
+                if (flag == false) {
+
                     //a new input stream for the client
-                    InputStream stream  = connection.getInputStream();
+                    InputStream stream = connection.getInputStream();
                     DataOutputStream dataOutputStream = new DataOutputStream(
-                    connection.getOutputStream());
+                            connection.getOutputStream());
                     //String messageFromClient = stream.readUTF() ;
                     //scanning the inputstream
                     sc = new Scanner(stream);
-        
+
                     //waiting for the client to write something as a username
-                    while(name.equals("")){
-                    String s = sc.next();
-                    //dataOutputStream.writeUTF(msgReply);
-                    //setting this clients username
-                    this.name = s;
-                   
+                    while (name.equals("")) {
+                        String s = sc.next();
+                        //dataOutputStream.writeUTF(msgReply);
+                        //setting this clients username
+                        this.name = s;
+
                     }
-                    
+
                     System.out.println(name + " är nu uppkopplad! " + "spelarnummer = " + playerNumber);
-                    
+
                     String msgPlayerNumberToPlayer = Integer.toString(playerNumber);
-                    PrintWriter printWriter = new PrintWriter (v[playerNumber-1].connection.getOutputStream());
+                    PrintWriter printWriter = new PrintWriter(v[playerNumber - 1].connection.getOutputStream());
                     printWriter.println(msgPlayerNumberToPlayer);
                     printWriter.flush();
-                    
+
                     //set flag to true 
                     flag = true;
-                    
+
                 }
-                
-                if(!name.equals("")){
+
+                if (!name.equals("")) {
                     //System.out.println("name is not empty");
-                    try (Scanner sc = new Scanner(connection.getInputStream())){
-                        while(sc.hasNextLine()){
+                    try (Scanner sc = new Scanner(connection.getInputStream())) {
+                        while (sc.hasNextLine()) {
                             msgFromClient = sc.nextLine();
                             System.out.println("msgFromClient: " + msgFromClient);
-                            
+
                             int pNumber = Integer.parseInt(msgFromClient.substring(0, 1));
                             String messageValue = msgFromClient.substring(1);
-                            
-                            if(messageValue.equals("highscore")){
-                                
+
+                            if (messageValue.equals("highscore")) {
+
                                 DataBaseConnection db = new DataBaseConnection();
                                 ArrayList<HighScore> arraylist = new ArrayList<HighScore>();
                                 arraylist = db.readDB();
                                 String highScoreString = "";
-                                for(int i = 0 ; i < 5 ; i++){
-                                    highScoreString = highScoreString + (i+1) + "   "+ arraylist.get(i).getUser() + "   " + arraylist.get(i).getMovesWon()+ "   "+ arraylist.get(i).getTime() + ",";
+                                for (int i = 0; i < 5; i++) {
+                                    highScoreString = highScoreString + (i + 1) + "   " + arraylist.get(i).getUser() + "   " + arraylist.get(i).getMovesWon() + "   " + arraylist.get(i).getTime() + ",";
                                 }
                                 System.out.println(highScoreString);
-                                PrintWriter printWriter = new PrintWriter (v[pNumber-1].connection.getOutputStream());
+                                PrintWriter printWriter = new PrintWriter(v[pNumber - 1].connection.getOutputStream());
                                 printWriter.println(pNumber + "highscore" + highScoreString);
                                 printWriter.flush();
-                                
-                            }
-                            else{
-                                
-                            
-                            //int pNumber = Integer.parseInt(msgFromClient.substring(0, 1));
-                            int pIndex = Integer.parseInt(msgFromClient.substring(1));
-                            
-                            String result = gameHandler.checkWin(pIndex, pNumber);
-                            
-                            
-                            //String serverMsg = playerNumber + msgFromClient;
-                            
-                            for(int y = 0 ; y < number ; y++){
-                                
-                                PrintWriter printWriter = new PrintWriter (v[y].connection.getOutputStream());
-                                printWriter.println(msgFromClient);
-                                printWriter.flush();
-                                
-                            }
-                            
-                            for(int y = 0 ; y < number ; y++){
-                                
-                                if(result.equals("5 in row")){
-                                    msgFromClient = pNumber + result;
+
+                            } else if (messageValue.equals("NewGame")) {
+                                int[] array = new int[400];
+                                for (int i = 0; i < 400; i++) {
+                                    array[i] = 0;
                                 }
-                                PrintWriter printWriter = new PrintWriter (v[y].connection.getOutputStream());
-                                printWriter.println(msgFromClient);
-                                printWriter.flush();
-                                
+                                gameHandler.setArray(array);
+
+                            } else {
+
+                                //int pNumber = Integer.parseInt(msgFromClient.substring(0, 1));
+                                int pIndex = Integer.parseInt(msgFromClient.substring(1));
+
+                                String result = gameHandler.checkWin(pIndex, pNumber);
+
+                                //String serverMsg = playerNumber + msgFromClient;
+                                for (int y = 0; y < number; y++) {
+
+                                    PrintWriter printWriter = new PrintWriter(v[y].connection.getOutputStream());
+                                    printWriter.println(msgFromClient);
+                                    printWriter.flush();
+
+                                }
+
+                                for (int y = 0; y < number; y++) {
+
+                                    if (result.equals("5 in row")) {
+                                        String pName = v[pNumber].name;
+                                        msgFromClient = pNumber + result +pName;
+                                    }
+                                    PrintWriter printWriter = new PrintWriter(v[y].connection.getOutputStream());
+                                    printWriter.println(msgFromClient);
+                                    printWriter.flush();
+
+                                }
                             }
-                            }
-                            
+
                         }
                         Thread.sleep(100);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    catch (IOException e) {
-			e.printStackTrace();
-		}
                 }
-                
-                
-                
+
                 //thread wait 0.1 seconds
-                 Thread.sleep(100);
-                 
-            //exception handling     
+                Thread.sleep(100);
+
+                //exception handling     
             } catch (InterruptedException ex) {
                 Logger.getLogger(GameServer.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(GameServer.class.getName()).log(Level.SEVERE, null, ex);
             }
-           
+
         }
     }
-	
-    
-    
+
 }

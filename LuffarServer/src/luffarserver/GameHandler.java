@@ -20,6 +20,16 @@ public class GameHandler {
             array[i] = 0;
         }
     }
+
+    public void setArray(int[] array) {
+        this.array = array;
+    }
+
+    public int[] getArray() {
+        return array;
+    }
+    
+    
     
     public String checkWin(int boxClicked, int playerNumber){
         
