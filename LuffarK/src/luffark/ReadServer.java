@@ -35,18 +35,20 @@ public class ReadServer implements Runnable {
     LuffarNorth ln;
     boolean hc = false;
     JLabel dragLabel;
+    PrintServer pServer;
 
     public ReadServer() {
         //this.ln = ln;
 
     }
 
-    public void setSocketVB(Socket connection, VarHolder varHolder, JButton[] arr, LuffarNorth ln, JLabel dragLabel) {
+    public void setSocketVB(Socket connection, VarHolder varHolder, JButton[] arr, LuffarNorth ln, JLabel dragLabel, PrintServer pServer) {
         this.connection = connection;
         this.varHolder = varHolder;
         this.arr = arr;
         this.ln = ln;
         this.dragLabel = dragLabel;
+        this.pServer = pServer;
     }
 
     public void resetMessageFromServer() {
@@ -114,8 +116,45 @@ public class ReadServer implements Runnable {
                         JOptionPane.showMessageDialog(null,
                             "Spelare " + varHolder.getMessage().charAt(0) + " " + varHolder.getMessage().substring(9) + " Vann");
                         varHolder.setIsAfterFirstGame(true);
-                        ln.getNewGameButton().setEnabled(true);
-                        break;
+                        
+                        
+                        try {
+                            Thread.sleep(1000);
+                            pServer.sendMessage(ln.getPlayerNumber() + "highscore");
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(ReadServer.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        ln.getBtnHighScore().setEnabled(false);
+                        
+                        while (reader.hasNextLine()) {
+				
+                            varHolder.setMessage(reader.nextLine());
+                            break;
+                        }
+                        
+                        if (varHolder.getMessage() != null && varHolder.getMessage().length() > 8 && varHolder.getMessage().substring(1,10).equals("highscore")) {
+                            System.out.println("highscore = " + varHolder.getMessage().substring(10));
+                            String hcm = varHolder.getMessage().substring(10);
+                            String output = "";
+                            output = "Id    Namn    Antal-drag  Tid" + "\n";
+                            char[] charArray = hcm.toCharArray();
+                            int charArrayLength = charArray.length;
+                    
+                            for(int a = 0; a<charArrayLength ; a++){
+                                if(charArray[a] == ','){
+                                    output += "\n";
+                                }
+                                else{
+                                    output += charArray[a];
+                                }
+                            }
+                    
+                            JOptionPane.showMessageDialog(null,
+                                output);
+                                hc = true;
+                            }
+                        
+                            break;
                     }
                 }
                 

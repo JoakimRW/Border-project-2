@@ -155,10 +155,10 @@ public class LuffarNorth extends JPanel implements ActionListener {
                 }
                 
                 socket = new Socket("localhost", 3004);
-
+                timer.start();
 //			Kör igång en tråd för att kunna skriva till servern, klassen ser samma ut som serverns skrivar klass.			
                 pServer.setSocket(socket);
-                rServer.setSocketVB(socket, varHolder, arr, this, dragLabel);
+                rServer.setSocketVB(socket, varHolder, arr, this, dragLabel,pServer);
                 Thread t1 = new Thread(pServer);
                 t1.start();
                 Thread t2 = new Thread(rServer);
@@ -197,7 +197,7 @@ public class LuffarNorth extends JPanel implements ActionListener {
                 System.out.println("Exception som kastades: " + e);
             }
 
-            timer.start();
+            
 
         }
 
@@ -235,6 +235,10 @@ public class LuffarNorth extends JPanel implements ActionListener {
     
     public Socket getSocket(){
         return socket;
+    }
+    
+    public JButton getBtnHighScore(){
+        return btnHighScore;
     }
     
 }
