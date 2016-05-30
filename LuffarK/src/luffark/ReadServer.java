@@ -79,7 +79,7 @@ public class ReadServer implements Runnable {
                 
                 
                 //if (varHolder.getMessage() != null && varHolder.getMessage().substring(1,11).equals("highscore")) {
-                if (varHolder.getMessage() != null && varHolder.getMessage().length() > 10 && hc == false) {
+                if (varHolder.getMessage() != null && varHolder.getMessage().length() > 10 && varHolder.getMessage().substring(1,10).equals("highscore") && hc == false) {
                     System.out.println("highscore = " + varHolder.getMessage().substring(10));
                     
                     String hcm = varHolder.getMessage().substring(10);
@@ -105,16 +105,20 @@ public class ReadServer implements Runnable {
                 else{
                     
                 }
-
-                if (varHolder.getMessage() != null && varHolder.getMessage().substring(1,9).equals("5 in row")) {
-                    System.out.println("Spelare " + varHolder.getMessage().charAt(0) + " " + varHolder.getMessage().substring(9)+ " Vann");
-                    ln.setTimer().stop();
-                    JOptionPane.showMessageDialog(null,
-                            "Spelare " + varHolder.getMessage().charAt(0) + " Vann");
-                    varHolder.setIsAfterFirstGame(true);
-                    break;
+                
+                if(varHolder.getMessage().length() > 9){
+                    
+                    if (varHolder.getMessage() != null && varHolder.getMessage().substring(1,9).equals("5 in row")) {
+                        System.out.println("Spelare " + varHolder.getMessage().charAt(0) + " " + varHolder.getMessage().substring(9)+ " Vann");
+                        ln.setTimer().stop();
+                        JOptionPane.showMessageDialog(null,
+                            "Spelare " + varHolder.getMessage().charAt(0) + " " + varHolder.getMessage().substring(9) + " Vann");
+                        varHolder.setIsAfterFirstGame(true);
+                        ln.getNewGameButton().setEnabled(true);
+                        break;
+                    }
                 }
-
+                
                 if (varHolder.getMessage() != null && varHolder.getMessage().length() > 1) {
                     System.out.println("getmessage = " + varHolder.getMessage());
                     pNumber = Integer.parseInt(varHolder.getMessage().substring(0, 1));

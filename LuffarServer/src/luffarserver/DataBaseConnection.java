@@ -258,4 +258,31 @@ public class DataBaseConnection {
     }
     
     
+    public int getHighScoreLength(){
+        
+        //calling the method connectDB 
+        conn = ConnectDB();
+        
+        
+        sql4="SELECT COUNT(*) FROM highscore;";
+            
+            try{
+                //prepare statement and execute query
+                pre = conn.prepareStatement(sql4);
+                rs = pre.executeQuery();
+           
+                if(rs.next()){
+                    highScoreTableLength = Integer.parseInt(rs.getString(1));
+                    System.out.println("count= " + highScoreTableLength);
+                }else{
+                    System.out.println("Access denied");
+                }
+            }catch(Exception e){
+                System.out.println("Error: "+e);
+            }
+            
+            return highScoreTableLength;
+        
+    }
+    
 }

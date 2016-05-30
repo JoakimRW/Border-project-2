@@ -178,10 +178,11 @@ public class GameServer implements Runnable {
                             if (messageValue.equals("highscore")) {
 
                                 DataBaseConnection db = new DataBaseConnection();
+                                int lengthOfTable = db.getHighScoreLength();
                                 ArrayList<HighScore> arraylist = new ArrayList<HighScore>();
                                 arraylist = db.readDB();
                                 String highScoreString = "";
-                                for (int i = 0; i < 5; i++) {
+                                for (int i = 0; i < lengthOfTable; i++) {
                                     highScoreString = highScoreString + (i + 1) + "   " + arraylist.get(i).getUser() + "   " + arraylist.get(i).getMovesWon() + "   " + arraylist.get(i).getTime() + ",";
                                 }
                                 System.out.println(highScoreString);
@@ -215,7 +216,7 @@ public class GameServer implements Runnable {
                                 for (int y = 0; y < number; y++) {
 
                                     if (result.equals("5 in row")) {
-                                        String pName = v[pNumber].name;
+                                        String pName = v[pNumber-1].name;
                                         msgFromClient = pNumber + result +pName;
                                     }
                                     PrintWriter printWriter = new PrintWriter(v[y].connection.getOutputStream());

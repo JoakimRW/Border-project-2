@@ -42,6 +42,7 @@ public class LuffarNorth extends JPanel implements ActionListener {
     double time = 0;
     ActionListener taskPerformer;
     Timer timer = new Timer(1000, taskPerformer);
+    Socket socket;
 
     public LuffarNorth(JButton[] arr, boolean canClick, int playerNumber, PrintServer pServer, ReadServer rServer, VarHolder varHolder, JLabel dragLabel, JLabel timeLabel) {
 
@@ -149,7 +150,11 @@ public class LuffarNorth extends JPanel implements ActionListener {
             System.out.println("Klienten startar");
             try {
 //			Skapar en anslutning mot en server, denna kan kasta ett par exceptions (vilka alla är eller ligger under IOException)
-                Socket socket = new Socket("localhost", 3004);
+                if(socket != null){
+                    socket.close();
+                }
+                
+                socket = new Socket("localhost", 3004);
 
 //			Kör igång en tråd för att kunna skriva till servern, klassen ser samma ut som serverns skrivar klass.			
                 pServer.setSocket(socket);
@@ -224,4 +229,12 @@ public class LuffarNorth extends JPanel implements ActionListener {
         return timer;
     }
 
+    public JButton getNewGameButton(){
+        return btnNewGame;
+    }
+    
+    public Socket getSocket(){
+        return socket;
+    }
+    
 }
