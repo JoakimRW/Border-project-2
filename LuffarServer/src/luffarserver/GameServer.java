@@ -1,3 +1,6 @@
+/*
+ * The main server class handling the connection between server and client
+ */
 package luffarserver;
 
 import java.io.DataInputStream;
@@ -140,14 +143,12 @@ public class GameServer implements Runnable {
                     InputStream stream = connection.getInputStream();
                     DataOutputStream dataOutputStream = new DataOutputStream(
                             connection.getOutputStream());
-                    //String messageFromClient = stream.readUTF() ;
                     //scanning the inputstream
                     sc = new Scanner(stream);
 
                     //waiting for the client to write something as a username
                     while (name.equals("")) {
                         String s = sc.next();
-                        //dataOutputStream.writeUTF(msgReply);
                         //setting this clients username
                         this.name = s;
 
@@ -166,7 +167,6 @@ public class GameServer implements Runnable {
                 }
 
                 if (!name.equals("")) {
-                    //System.out.println("name is not empty");
                     try (Scanner sc = new Scanner(connection.getInputStream())) {
                         while (sc.hasNextLine()) {
                             msgFromClient = sc.nextLine();
@@ -174,7 +174,7 @@ public class GameServer implements Runnable {
 
                             int pNumber = Integer.parseInt(msgFromClient.substring(0, 1));
                             String messageValue = msgFromClient.substring(1);
-
+                            //check if client wants see the highscore
                             if (messageValue.equals("highscore")) {
 
                                 DataBaseConnection db = new DataBaseConnection();
@@ -190,21 +190,12 @@ public class GameServer implements Runnable {
                                 printWriter.println(pNumber + "highscore" + highScoreString);
                                 printWriter.flush();
 
-                            } else if (messageValue.equals("NewGame")) {
-                                int[] array = new int[400];
-                                for (int i = 0; i < 400; i++) {
-                                    array[i] = 0;
-                                }
-                                gameHandler.setArray(array);
+                            }  else {
 
-                            } else {
-
-                                //int pNumber = Integer.parseInt(msgFromClient.substring(0, 1));
                                 int pIndex = Integer.parseInt(msgFromClient.substring(1));
 
                                 String result = gameHandler.checkWin(pIndex, pNumber);
 
-                                //String serverMsg = playerNumber + msgFromClient;
                                 for (int y = 0; y < number; y++) {
 
                                     PrintWriter printWriter = new PrintWriter(v[y].connection.getOutputStream());

@@ -1,21 +1,14 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * The class that reads information from the server and acts on it.
  */
 package luffark;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.collections.ObservableList;
-import javafx.scene.control.Button;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -25,7 +18,7 @@ import javax.swing.JOptionPane;
  * @author JRW
  */
 public class ReadServer implements Runnable {
-
+    //variables
     private Socket connection;
     private String msgFromServer;
     private VarHolder varHolder;
@@ -38,7 +31,6 @@ public class ReadServer implements Runnable {
     PrintServer pServer;
 
     public ReadServer() {
-        //this.ln = ln;
 
     }
 
@@ -50,7 +42,7 @@ public class ReadServer implements Runnable {
         this.dragLabel = dragLabel;
         this.pServer = pServer;
     }
-
+    //getter and setter
     public void resetMessageFromServer() {
         msgFromServer = null;
     }
@@ -79,8 +71,8 @@ public class ReadServer implements Runnable {
             while (true) {
                 System.out.println("while true satsen snurrar");
                 
-                
-                //if (varHolder.getMessage() != null && varHolder.getMessage().substring(1,11).equals("highscore")) {
+                //checks if the message from the server is the highscore
+                // and if it is displays the highscore
                 if (varHolder.getMessage() != null && varHolder.getMessage().length() > 10 && varHolder.getMessage().substring(1,10).equals("highscore") && hc == false) {
                     System.out.println("highscore = " + varHolder.getMessage().substring(10));
                     
@@ -107,7 +99,8 @@ public class ReadServer implements Runnable {
                 else{
                     
                 }
-                
+                // checks if the message from the server is reporting a win
+                // and if so reports the vinner 
                 if(varHolder.getMessage().length() > 9){
                     
                     if (varHolder.getMessage() != null && varHolder.getMessage().substring(1,9).equals("5 in row")) {
@@ -131,7 +124,7 @@ public class ReadServer implements Runnable {
                             varHolder.setMessage(reader.nextLine());
                             break;
                         }
-                        
+                        // displays the highscore after a winner has been decided
                         if (varHolder.getMessage() != null && varHolder.getMessage().length() > 8 && varHolder.getMessage().substring(1,10).equals("highscore")) {
                             System.out.println("highscore = " + varHolder.getMessage().substring(10));
                             String hcm = varHolder.getMessage().substring(10);
@@ -169,6 +162,7 @@ public class ReadServer implements Runnable {
                     
                     System.out.println("pIndex = " + pIndex);
                 }
+                // applies the players mark to a button 
                 if (varHolder.getMessage() != null && varHolder.getMessage().length() > 1 && arr[pIndex].getText() != "O" && arr[pIndex].getText() != "X" && hc==false) {
 
                     if (pNumber == 1) {
@@ -210,6 +204,7 @@ public class ReadServer implements Runnable {
                 } else {
                     second = true;
                 }
+                //recieves the next line
                 if (second == true) {
                     while (reader.hasNextLine()) {
 //				nextLine kastar exception men borde inte hända då vi kollar om det finns en ny rad varje gång, innan de läses.

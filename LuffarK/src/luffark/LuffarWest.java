@@ -21,7 +21,7 @@ import javax.swing.JPanel;
  * @author Reza
  */
 public class LuffarWest extends JPanel implements ActionListener {
-
+    //variables
     JButton btnNewGame, btnInfo, btnHighScore;
     PrintServer pServer;
     ReadServer rServer;
@@ -34,6 +34,8 @@ public class LuffarWest extends JPanel implements ActionListener {
     JLabel dragLabel;
     JLabel timeLabel;
 
+    
+    //constructor
     public LuffarWest(JButton[] arr, boolean canClick, int playerNumber, PrintServer pServer, ReadServer rServer, VarHolder varHolder, LuffarNorth ln, JLabel dragLabel,JLabel timeLabel) {
 
         this.buttonArray = arr;
@@ -50,7 +52,7 @@ public class LuffarWest extends JPanel implements ActionListener {
 
         setLayout(gr);
         GridBagConstraints con;
-
+        //setting style of the buttons and their layout
         for (int x = 0; x < 400; x++) {
             buttonArray[x].setPreferredSize(new Dimension(60, 40));
             con = new GridBagConstraints();
@@ -66,7 +68,7 @@ public class LuffarWest extends JPanel implements ActionListener {
         
 
     }
-
+    //the actionEvent that decides what happens when you click on the playfield
     @Override
     public void actionPerformed(ActionEvent ae) {
 
@@ -78,7 +80,6 @@ public class LuffarWest extends JPanel implements ActionListener {
         }
 
         System.out.println(k);
-        //buttonArray[k].removeActionListener(this);
         System.out.println("canclick= " + ln.getCanClicked());
         System.out.println("playernumber = " + ln.getPlayerNumber());
         canClick = ln.getCanClicked();
@@ -88,22 +89,18 @@ public class LuffarWest extends JPanel implements ActionListener {
 
             System.out.println("button index +1= " + (k + 1));
             pServer.sendMessage("" + playerNumber + (k + 1));
-            //ln.setCanClicked(false);
             System.out.println("" + rServer.GetMessageFromServer());
 
         } else if (canClick == true && playerNumber == 2) {
 
             System.out.println("Inte min tur men Cirklar");
-            //ln.setCanClicked(false);
 
         } else if (canClick == false && playerNumber == 2) {
             System.out.println("button index +1= " + (k + 1));
             pServer.sendMessage("" + playerNumber + (k + 1));
-            //ln.setCanClicked(true);
 
         } else if (canClick == false && playerNumber == 1) {
             System.out.println("player 2 s tur men jag kryssar");
-            //ln.setCanClicked(true);
         }
 
     }

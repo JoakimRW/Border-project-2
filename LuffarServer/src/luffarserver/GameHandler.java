@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * The model class of the server handling the logic behind the game 
  */
 package luffarserver;
 
@@ -30,7 +28,10 @@ public class GameHandler {
     }
     
     
-    
+    //The function that checks if any player has won it does this by checking 
+    //the button that was pressed and surrounding buttons following pressed buttons
+    //and reporting if any combination of buttons with the clicked button at its center 
+    // reaches 5
     public String checkWin(int boxClicked, int playerNumber){
         
         orgBoxClicked = boxClicked;
@@ -44,12 +45,6 @@ public class GameHandler {
         int northwest = 0;
         int eastwest = 0;
         
-        /*
-        array[105] = 2;
-        array[42] = 2;
-        array[63] = 2;
-        array[84] = 2;
-        */
         
         array[boxClicked - 1] = playerNumber;
         

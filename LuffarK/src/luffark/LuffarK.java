@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * The Controller class for the client program
  */
 package luffark;
 
@@ -22,7 +20,7 @@ import javax.swing.JPanel;
  * @author Reza
  */
 public class LuffarK {
-
+    //Variables
     JButton[] buttonArray = new JButton[400];
     PrintServer pServer = new PrintServer();
     ReadServer rServer = new ReadServer();
@@ -37,7 +35,7 @@ public class LuffarK {
     
     
     public LuffarK() {
-        
+        //creating the array of buttons that is the playfield
         for(int x = 0 ; x<400 ; x++){
             buttonArray[x] = new JButton();
             buttonArray[x].setFocusPainted(false);
@@ -45,7 +43,7 @@ public class LuffarK {
         }
         
         
-        
+        //Structuring the design of the game  
         LuffarNorth ln = new LuffarNorth(buttonArray, canClick, playerNumber, pServer, rServer,varHolder, dragLabel, timeLabel);
         LuffarWest lw = new LuffarWest(buttonArray, canClick, playerNumber, pServer, rServer,varHolder, ln, dragLabel, timeLabel);
         LuffarView lv = new LuffarView(ln, lw);
