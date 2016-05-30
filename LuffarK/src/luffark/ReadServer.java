@@ -108,7 +108,6 @@ public class ReadServer implements Runnable {
                         ln.setTimer().stop();
                         JOptionPane.showMessageDialog(null,
                             "Spelare " + varHolder.getMessage().charAt(0) + " " + varHolder.getMessage().substring(9) + " Vann");
-                        varHolder.setIsAfterFirstGame(true);
                         
                         
                         try {

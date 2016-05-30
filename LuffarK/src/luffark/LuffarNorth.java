@@ -139,13 +139,6 @@ public class LuffarNorth extends JPanel implements ActionListener {
 
         if (ae.getSource() == btnNewGame) {
 
-            if (varHolder.getIsAfterFirstGame() == true) {
-
-                for (int t = 0 ; t < arr.length ; t++ ) {
-                    arr[t].setText("");
-                    pServer.sendMessage(varHolder.getPlayerNumber() + "NewGame");
-                }
-            }
 
             System.out.println("Klienten startar");
             try {
@@ -191,7 +184,6 @@ public class LuffarNorth extends JPanel implements ActionListener {
                 }
                 btnHighScore.setEnabled(true);
                 btnNewGame.setEnabled(false);
-                varHolder.setIsAfterFirstGame(true);
             } //Denna catch-sats fångar exception från nästan alla rader i try-satsen, enkelt att göra men kanske inte så bra då det blir så generellt.
             catch (IOException e) {
                 System.out.println("Exception som kastades: " + e);
