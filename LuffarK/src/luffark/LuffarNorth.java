@@ -1,7 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Luffarnorth creates the grid that holds the buttons of the playfield  
+ * it also handles much of the logic for sending messages to the server
+ * it also defines the menubuttons and the time and number of moves
+ * 
  */
 package luffark;
 
@@ -27,7 +28,7 @@ import javax.swing.Timer;
  * @author Reza
  */
 public class LuffarNorth extends JPanel implements ActionListener {
-
+    // variables
     JButton btnNewGame, btnInfo, btnHighScore;
     TextInputDialog getName;
     PrintServer pServer;
@@ -78,19 +79,16 @@ public class LuffarNorth extends JPanel implements ActionListener {
         con = new GridBagConstraints();
         con.gridy = 1;
         con.gridx = 0;
-        //con.insets = new Insets(10, 10, 10, 10);
         add(btnNewGame, con);
 
         con = new GridBagConstraints();
         con.gridy = 2;
         con.gridx = 0;
-        //con.insets = new Insets(10, 10, 10, 10);
         add(btnInfo, con);
 
         con = new GridBagConstraints();
         con.gridy = 3;
         con.gridx = 0;
-        //con.insets = new Insets(10, 10, 10, 10);
         add(btnHighScore, con);
 
         con = new GridBagConstraints();
@@ -157,12 +155,7 @@ public class LuffarNorth extends JPanel implements ActionListener {
                 Thread t2 = new Thread(rServer);
                 t2.start();
 
-                //getName = new TextInputDialog();
                 playerName = JOptionPane.showInputDialog("Please fill in your name: ");
-                //getName.setTitle("Name");
-                //getName.setContentText("Please fill in your name");
-                //Optional<String> result = getName.showAndWait();
-                //playerName = result.get();
 
                 varHolder.setPlayerName(playerName);
                 pServer.sendMessage(playerName);
@@ -175,7 +168,6 @@ public class LuffarNorth extends JPanel implements ActionListener {
                         System.out.println("Har fått spelarnummer = " + playerNumber);
 
                         setCanClicked(true);
-                        //System.out.println("canclick inside while = " + canClick);
 
                         varHolder.setMessage(null);
                         System.out.println("Message is reset = " + varHolder.getMessage());
@@ -194,12 +186,6 @@ public class LuffarNorth extends JPanel implements ActionListener {
         }
 
         if (ae.getSource() == btnHighScore) {
-            /*JOptionPane.showMessageDialog(null,
-                                    "The goal with Tic Tac Toe is to get 5 marks in a row of the same type \n"
-                                    + "each player gets one type of mark, the first gets Circles O and \n"
-                                    + "the second gets crosses X, you do this in a field of play consisting of 20*20 squares,\n"
-                                    + "you cannot mark a square you or your opponent has already marked and you take turns marking \n");
-             */
             pServer.sendMessage(playerNumber + "highscore");
         }
 
