@@ -219,4 +219,11 @@ public class LuffarNorth extends JPanel implements ActionListener {
         return btnHighScore;
     }
     
+    public JLabel getDragLabel(){
+        return dragLabel;
+    }
+    public JLabel getTimeLabel(){
+        return timeLabel;
+    }
+    
 }

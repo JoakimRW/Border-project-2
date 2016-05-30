@@ -106,6 +106,8 @@ public class ReadServer implements Runnable {
                     if (varHolder.getMessage() != null && varHolder.getMessage().substring(1,9).equals("5 in row")) {
                         System.out.println("Spelare " + varHolder.getMessage().charAt(0) + " " + varHolder.getMessage().substring(9)+ " Vann");
                         ln.setTimer().stop();
+                     
+                        pServer.sendMessage(varHolder.getMessage().charAt(0) + "writedb" + "," + LuffarK.move + "," + varHolder.getMessage().substring(9) + "," + ln.getTimeLabel().getText() + "-");
                         JOptionPane.showMessageDialog(null,
                             "Spelare " + varHolder.getMessage().charAt(0) + " " + varHolder.getMessage().substring(9) + " Vann");
                         

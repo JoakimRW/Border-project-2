@@ -201,8 +201,10 @@ public class DataBaseConnection {
         
         //statement
         Statement stmt = null;
+        
+        highScoreTableLength = getHighScoreLength();
          
-        for(int x = 0 ; x < 5 ; x++){
+        for(int x = 0 ; x < highScoreTableLength ; x++){
             
             conn = ConnectDB();
             
@@ -241,7 +243,7 @@ public class DataBaseConnection {
         arraylist = arrlist;
         int indexOfHighest = 0;
         
-        for(int i = 0 ; i < 6 ; i++){
+        for(int i = 0 ; i < (arraylist.size())  ; i++){
             
             if(arraylist.get(i).getMovesWon() > arraylist.get(indexOfHighest).getMovesWon()){
                 

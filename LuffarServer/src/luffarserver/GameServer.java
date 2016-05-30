@@ -62,6 +62,7 @@ public class GameServer implements Runnable {
 
     String msgReply = "250";
     String msgFromClient = "";
+    DataBaseConnection db;
 
     public GameHandler gameHandler = new GameHandler();
 
@@ -72,13 +73,14 @@ public class GameServer implements Runnable {
             serverLoop();
 
         }
+        
     }
 
     public GameServer(Socket so, int plNum) throws IOException {
         //set the quiz-instance socket
         this.connection = so;
         this.playerNumber = plNum;
-
+        db = new DataBaseConnection();
     }
 
     //the loop-method which will run until the maximum number of clients is reached
@@ -174,10 +176,21 @@ public class GameServer implements Runnable {
 
                             int pNumber = Integer.parseInt(msgFromClient.substring(0, 1));
                             String messageValue = msgFromClient.substring(1);
+                            String writedbMessage = "";
+                                    
+                            if(msgFromClient.length()>8){
+                                writedbMessage = msgFromClient.substring(1,8);
+                            }
+                            
+                            /*
+                            if(writedbMessage.equals("writedb")){
+                                System.out.println("writeDB");
+                            }*/
+                            
                             //check if client wants see the highscore
                             if (messageValue.equals("highscore")) {
 
-                                DataBaseConnection db = new DataBaseConnection();
+                                
                                 int lengthOfTable = db.getHighScoreLength();
                                 ArrayList<HighScore> arraylist = new ArrayList<HighScore>();
                                 arraylist = db.readDB();
@@ -190,7 +203,79 @@ public class GameServer implements Runnable {
                                 printWriter.println(pNumber + "highscore" + highScoreString);
                                 printWriter.flush();
 
-                            }  else {
+                            }
+                            else if(writedbMessage.equals("writedb")){
+                                System.out.println("writeDB");
+                                
+                                char[] charArray = msgFromClient.toCharArray();
+                                int moves=0;
+                                String strMoves = "";
+                                String time = "";
+                                String winner = "";
+                                int j = 0;
+                                
+                                for(int d = 0; d<charArray.length ; d++){
+                                    if(charArray[d] == ','){
+                                        j = d;
+                                        if(d != charArray.length -2 ){
+                                            j++;
+                                        }
+                                        
+                                        while(charArray[j] != ',' ){
+                                            
+                                            strMoves += charArray[j];
+                                            j++;
+                                        };
+                                        break;
+                                    }
+                                    
+                                }
+                                
+                                
+                                int k = 0;
+                                for(int d = 0; d<charArray.length ; d++){
+                                    if(charArray[d] == ','){
+                                        
+                                        if(d != charArray.length -2 ){
+                                            j++;
+                                        }
+                                        
+                                        while(charArray[j] != ',' ){
+                                            
+                                            winner += charArray[j];
+                                            j++;
+                                        };
+                                        break;
+                                    }
+                                    
+                                }
+                                
+                                k = 0;
+                                for(int d = 0; d<charArray.length ; d++){
+                                    if(charArray[d] == ','){
+                                        k++;
+                                        if(k>=3){
+                                            do{
+                                                time += charArray[++d]; 
+                                            }while(charArray[d+1] != '-');
+                                        }
+                                        
+                                        
+                                    }
+                                    
+                                }
+                                
+                                moves = Integer.parseInt(strMoves);
+                                
+                                System.out.println("Moves = " + moves);
+                                System.out.println("winner = " + winner);
+                                System.out.println("time = " + time);
+                                
+                                db.writeHighScore(winner, moves, time);
+                                
+                            }
+                                
+                            else {
 
                                 int pIndex = Integer.parseInt(msgFromClient.substring(1));
 
