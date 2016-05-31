@@ -7,7 +7,7 @@ package luffarserver;
  *
  * @author Reza
  */
-public class HighScore {
+public class HighScore implements Comparable<HighScore>{
     
     private int id;
     private String username;
@@ -45,5 +45,15 @@ public class HighScore {
     public String getTime(){
         return timeswon;
     }
+
+    @Override
+    public int compareTo(HighScore t) {
+        
+        int compareQuantity = ((HighScore) t).getMovesWon(); 
+		
+		//ascending order
+		return this.moveswon - compareQuantity;
+    }
+
     
 }

@@ -17,6 +17,10 @@ public class LuffarServer {
     public static void main(String[] args) {
        
         GameServer gs = new GameServer();
+        
+        //DataBaseConnection db = new DataBaseConnection();
+        //db.writeHighScore("olof", 9, "1:37");
+        
     }
     
 }

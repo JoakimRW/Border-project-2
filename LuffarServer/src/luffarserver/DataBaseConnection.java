@@ -13,6 +13,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -255,6 +258,8 @@ public class DataBaseConnection {
         
         arraylist.remove(indexOfHighest);
         
+        Collections.sort(arraylist);
+        
         
         return arraylist;
     }
@@ -286,5 +291,23 @@ public class DataBaseConnection {
             return highScoreTableLength;
         
     }
+
+    /*
+    public int compareTo(HighScore comparestu) {
+        int comparemoves=((HighScore)comparestu).getMovesWon();
+        return comparemoves;
+    }*/
+
+    /*
+    @Override
+    public int compare(HighScore t, HighScore t1) {
+        return Integer.compare(t.getMovesWon(), t1.getMovesWon());
+    }*/
+
+    
+
+    
+
+   
     
 }
