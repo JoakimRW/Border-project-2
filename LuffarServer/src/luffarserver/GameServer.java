@@ -59,6 +59,7 @@ public class GameServer implements Runnable {
 
     //this flag is used to determine when to send the welcome message to the clients newly connected
     private boolean flag = false;
+    public static boolean writeToDbFlag = true; 
 
     String msgReply = "250";
     String msgFromClient = "";
@@ -205,6 +206,10 @@ public class GameServer implements Runnable {
 
                             }
                             else if(writedbMessage.equals("writedb")){
+                                
+                                if(writeToDbFlag == true){
+                                    
+                                
                                 System.out.println("writeDB");
                                 
                                 char[] charArray = msgFromClient.toCharArray();
@@ -272,9 +277,10 @@ public class GameServer implements Runnable {
                                 System.out.println("time = " + time);
                                 
                                 db.writeHighScore(winner, moves, time);
-                                
+                                writeToDbFlag = false;
                             }
                                 
+                            }  
                             else {
 
                                 int pIndex = Integer.parseInt(msgFromClient.substring(1));
@@ -301,7 +307,8 @@ public class GameServer implements Runnable {
 
                                 }
                             }
-
+                                
+                            
                         }
                         Thread.sleep(100);
                     } catch (IOException e) {

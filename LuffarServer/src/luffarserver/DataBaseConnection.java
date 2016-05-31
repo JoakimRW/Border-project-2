@@ -223,6 +223,9 @@ public class DataBaseConnection {
             }catch(Exception e){
                 System.out.println("Error: "+e);
             }
+        }
+            
+             for(int x = 0 ; x < highScoreTableLength ; x++){
             
             String sql="insert into highscore values (" + (x+1) + ",'" + arraylist.get(x).getUser() + "'," + arraylist.get(x).getMovesWon() + ",'" + arraylist.get(x).getTime() + "');" ;
             //System.out.println(sql);
@@ -231,12 +234,18 @@ public class DataBaseConnection {
                 //statement and update-query
                 stmt = conn.createStatement();
                 stmt.executeUpdate(sql);
-                conn.close();
+                
             }
             catch(Exception e){
                 System.out.println("Error: "+e);
             
             }
+             
+        }
+        try {
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }
