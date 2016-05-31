@@ -40,12 +40,13 @@ public class LuffarNorth extends JPanel implements ActionListener {
     JButton arr[];
     JLabel dragLabel;
     JLabel timeLabel;
+    JLabel turnLabel;
     double time = 0;
     ActionListener taskPerformer;
     Timer timer = new Timer(1000, taskPerformer);
     Socket socket;
 
-    public LuffarNorth(JButton[] arr, boolean canClick, int playerNumber, PrintServer pServer, ReadServer rServer, VarHolder varHolder, JLabel dragLabel, JLabel timeLabel) {
+    public LuffarNorth(JButton[] arr, boolean canClick, int playerNumber, PrintServer pServer, ReadServer rServer, VarHolder varHolder, JLabel dragLabel, JLabel timeLabel,JLabel turnLabel) {
 
         this.arr = arr;
         this.canClick = canClick;
@@ -55,6 +56,7 @@ public class LuffarNorth extends JPanel implements ActionListener {
         this.varHolder = varHolder;
         this.dragLabel = dragLabel;
         this.timeLabel = timeLabel;
+        this.turnLabel = turnLabel;
 
         btnNewGame = new JButton("New Game");
         btnNewGame.addActionListener(this);
@@ -102,11 +104,19 @@ public class LuffarNorth extends JPanel implements ActionListener {
         con.gridx = 0;
         con.insets = new Insets(10, 10, 10, 10);
         add(timeLabel, con);
+        
+        con = new GridBagConstraints();
+        con.gridy = 6;
+        con.gridx = 0;
+        con.insets = new Insets(10, 10, 10, 10);
+        add(turnLabel, con);
 
         dragLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
         timeLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
+        turnLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
         dragLabel.setText("Move: 1");
         timeLabel.setText("00:00");
+        turnLabel.setText("turn");
 
         timer = new Timer(1000, new ActionListener() {
             @Override
@@ -227,6 +237,10 @@ public class LuffarNorth extends JPanel implements ActionListener {
     }
     public JLabel getTimeLabel(){
         return timeLabel;
+    }
+    
+    public JLabel getTurnLabel(){
+        return turnLabel;
     }
     
 }

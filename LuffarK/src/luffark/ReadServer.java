@@ -185,6 +185,21 @@ public class ReadServer implements Runnable {
                         } else {
                             ln.setCanClicked(true);
                         }
+                        
+                        if (ln.getCanClicked() == true && ln.getPlayerNumber() == 1) {
+
+                            ln.getTurnLabel().setText("Your turn!");
+
+                        } else if (ln.getCanClicked() == true && ln.getPlayerNumber() == 2) {
+                            ln.getTurnLabel().setText("Your opponent's turn!");
+                            
+                        } else if (ln.getCanClicked() == false && ln.getPlayerNumber() == 2) {
+                            ln.getTurnLabel().setText("Your turn!");
+                            
+                        } else if (ln.getCanClicked() == false && ln.getPlayerNumber() == 1) {
+                             ln.getTurnLabel().setText("Your opponent's turn!");   
+                        }
+                        
 
                     } else if (pNumber == 2) {
 
@@ -198,11 +213,27 @@ public class ReadServer implements Runnable {
                         }
                         if (ln.getCanClicked() == true) {
                             ln.setCanClicked(false);
+                            
                         } else {
                             ln.setCanClicked(true);
                         }
                         LuffarK.move++;
                         dragLabel.setText("Move: " + LuffarK.move);
+                        
+                        if (ln.getCanClicked() == true && ln.getPlayerNumber() == 1) {
+
+                            ln.getTurnLabel().setText("Your turn!");
+
+                        } else if (ln.getCanClicked() == true && ln.getPlayerNumber() == 2) {
+                            ln.getTurnLabel().setText("Your opponent's turn!");
+                            
+                        } else if (ln.getCanClicked() == false && ln.getPlayerNumber() == 2) {
+                            ln.getTurnLabel().setText("Your turn!");
+                            
+                        } else if (ln.getCanClicked() == false && ln.getPlayerNumber() == 1) {
+                             ln.getTurnLabel().setText("Your opponent's turn!");   
+                        }
+                        
                     }
                 } else {
                     second = true;

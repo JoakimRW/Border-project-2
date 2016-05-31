@@ -31,6 +31,7 @@ public class LuffarK {
     Dimension prefSize;
     JLabel dragLabel = new JLabel();
     JLabel timeLabel = new JLabel();
+    JLabel turnLabel = new JLabel();
     public static int move = 1;
     
     
@@ -44,7 +45,7 @@ public class LuffarK {
         
         
         //Structuring the design of the game  
-        LuffarNorth ln = new LuffarNorth(buttonArray, canClick, playerNumber, pServer, rServer,varHolder, dragLabel, timeLabel);
+        LuffarNorth ln = new LuffarNorth(buttonArray, canClick, playerNumber, pServer, rServer,varHolder, dragLabel, timeLabel,turnLabel);
         LuffarWest lw = new LuffarWest(buttonArray, canClick, playerNumber, pServer, rServer,varHolder, ln, dragLabel, timeLabel);
         LuffarView lv = new LuffarView(ln, lw);
         
