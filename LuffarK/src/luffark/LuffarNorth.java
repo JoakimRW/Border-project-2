@@ -145,7 +145,10 @@ public class LuffarNorth extends JPanel implements ActionListener {
                     socket.close();
                 }
                 
-                socket = new Socket("localhost", 3004);
+                //få ip från användaren blir localhost om ingenting skrivs
+                String address = JOptionPane.showInputDialog("Please enter the ip or nothing for localhost");
+                if(address == null) address = "localhost";
+                socket = new Socket(address, 3004);
                 timer.start();
 //			Kör igång en tråd för att kunna skriva till servern, klassen ser samma ut som serverns skrivar klass.			
                 pServer.setSocket(socket);
