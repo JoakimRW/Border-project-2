@@ -175,6 +175,7 @@ public class DataBaseConnection {
         //calling the connectDB-method to establish a connection
         conn = ConnectDB();
         
+        arraylist.clear();
         arraylist = readDB();
         
         sql4="SELECT COUNT(*) FROM highscore;";
@@ -231,10 +232,11 @@ public class DataBaseConnection {
             }
         }
             
+        System.out.println("Writing to database:");
              for(int x = 0 ; x < highScoreTableLength ; x++){
                 conn = ConnectDB();
                 String sql="insert into highscore values (" + (x+1) + ",'" + arraylist2.get(x).getUser() + "'," + arraylist2.get(x).getMovesWon() + ",'" + arraylist2.get(x).getTime() + "');" ;
-            //System.out.println(sql);
+                System.out.println((x+1) + ",'" + arraylist2.get(x).getUser() + "'," + arraylist2.get(x).getMovesWon() + ",'" + arraylist2.get(x).getTime());
         
             try{
                 //statement and update-query
