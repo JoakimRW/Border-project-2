@@ -63,7 +63,7 @@ public class GameServer implements Runnable {
 
     String msgReply = "250";
     String msgFromClient = "";
-    DataBaseConnection db;
+    public static DataBaseConnection db = new DataBaseConnection();
 
     public GameHandler gameHandler = new GameHandler();
 
@@ -81,7 +81,7 @@ public class GameServer implements Runnable {
         //set the quiz-instance socket
         this.connection = so;
         this.playerNumber = plNum;
-        db = new DataBaseConnection();
+        //db = new DataBaseConnection();
     }
 
     //the loop-method which will run until the maximum number of clients is reached

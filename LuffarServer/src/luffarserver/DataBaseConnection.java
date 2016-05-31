@@ -42,6 +42,7 @@ public class DataBaseConnection {
     private String sql4 = "";
     private ArrayList<HighScore> arraylist = new ArrayList<HighScore>();
     private int highScoreTableLength = 0;
+    private static boolean writeToDbFlag = true;
     
     
     public ArrayList<HighScore> readDB(){
@@ -169,6 +170,8 @@ public class DataBaseConnection {
     
     public void writeHighScore(String username, int moveswon, String time){
         
+        if(writeToDbFlag == true){
+        
         //calling the connectDB-method to establish a connection
         conn = ConnectDB();
         
@@ -244,9 +247,11 @@ public class DataBaseConnection {
             
             }
              
+            }
+             
+        writeToDbFlag = false;
+        
         }
-        
-        
     }
     
     public ArrayList<HighScore> sortHighScore(ArrayList<HighScore> arrlist){
