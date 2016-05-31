@@ -244,8 +244,9 @@ public class DataBaseConnection {
     public ArrayList<HighScore> sortHighScore(ArrayList<HighScore> arrlist){
         
         arraylist = arrlist;
-        int indexOfHighest = 0;
+        //int indexOfHighest = 0;
         
+        /*
         for(int i = 0 ; i < (arraylist.size())  ; i++){
             
             if(arraylist.get(i).getMovesWon() > arraylist.get(indexOfHighest).getMovesWon()){
@@ -254,12 +255,13 @@ public class DataBaseConnection {
                 System.out.println("indexofhighest = " + indexOfHighest);
             }
            
-        }
+        }*/
         
-        arraylist.remove(indexOfHighest);
+        //arraylist.remove(indexOfHighest);
         
         Collections.sort(arraylist);
         
+        arraylist.remove(arraylist.size()-1);
         
         return arraylist;
     }
