@@ -200,16 +200,19 @@ public class DataBaseConnection {
         highscore.setTime(time);
         arraylist.add(highscore);
             
-        arraylist = sortHighScore(arraylist);
+        ArrayList<HighScore> arraylist2 = new ArrayList<HighScore>();
+        
+        arraylist2 = sortHighScore(arraylist);
         
         //statement
         Statement stmt = null;
         
         highScoreTableLength = getHighScoreLength();
          
+        conn = ConnectDB();
         for(int x = 0 ; x < highScoreTableLength ; x++){
             
-            conn = ConnectDB();
+            //conn = ConnectDB();
             
             String sqlDel="DELETE FROM highscore " + "WHERE id = " + (x+1) ;
             System.out.println(sqlDel);
@@ -226,15 +229,15 @@ public class DataBaseConnection {
         }
             
              for(int x = 0 ; x < highScoreTableLength ; x++){
-            
-            String sql="insert into highscore values (" + (x+1) + ",'" + arraylist.get(x).getUser() + "'," + arraylist.get(x).getMovesWon() + ",'" + arraylist.get(x).getTime() + "');" ;
+                conn = ConnectDB();
+                String sql="insert into highscore values (" + (x+1) + ",'" + arraylist2.get(x).getUser() + "'," + arraylist2.get(x).getMovesWon() + ",'" + arraylist2.get(x).getTime() + "');" ;
             //System.out.println(sql);
         
             try{
                 //statement and update-query
                 stmt = conn.createStatement();
                 stmt.executeUpdate(sql);
-                
+                conn.close();
             }
             catch(Exception e){
                 System.out.println("Error: "+e);
@@ -242,11 +245,7 @@ public class DataBaseConnection {
             }
              
         }
-        try {
-            conn.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(DataBaseConnection.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
         
     }
     
