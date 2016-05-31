@@ -3,7 +3,6 @@
  */
 package luffarserver;
 
-import java.util.ArrayList;
 
 /**
  *
@@ -18,8 +17,6 @@ public class LuffarServer {
        
         GameServer gs = new GameServer();
         
-        //DataBaseConnection db = new DataBaseConnection();
-        //db.writeHighScore("olof", 9, "1:37");
         
     }
     

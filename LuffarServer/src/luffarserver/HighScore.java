@@ -46,6 +46,7 @@ public class HighScore implements Comparable<HighScore>{
         return timeswon;
     }
 
+    //sort-method
     @Override
     public int compareTo(HighScore t) {
         

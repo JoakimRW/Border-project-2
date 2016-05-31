@@ -3,35 +3,26 @@
  */
 package luffark;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import javax.swing.JButton;
-import javax.swing.JFrame;
-import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 /**
  *
  * @author Reza
  */
 public class LuffarK {
-    //Variables
-    JButton[] buttonArray = new JButton[400];
-    PrintServer pServer = new PrintServer();
-    ReadServer rServer = new ReadServer();
-    String playerName;
-    VarHolder varHolder = new VarHolder();
-    int playerNumber;
-    boolean canClick ;
-    Dimension prefSize;
-    JLabel dragLabel = new JLabel();
-    JLabel timeLabel = new JLabel();
-    JLabel turnLabel = new JLabel();
+    
+    //Instance Variables
+    private JButton[] buttonArray = new JButton[400];
+    private PrintServer pServer = new PrintServer();
+    private ReadServer rServer = new ReadServer();
+    private VarHolder varHolder = new VarHolder();
+    private int playerNumber;
+    private boolean canClick ;
+    private JLabel dragLabel = new JLabel();
+    private JLabel timeLabel = new JLabel();
+    private JLabel turnLabel = new JLabel();
     public static int move = 1;
     
     
@@ -44,7 +35,7 @@ public class LuffarK {
         }
         
         
-        //Structuring the design of the game  
+        //Structuring the design of the game and sending objects as parameters 
         LuffarNorth ln = new LuffarNorth(buttonArray, canClick, playerNumber, pServer, rServer,varHolder, dragLabel, timeLabel,turnLabel);
         LuffarWest lw = new LuffarWest(buttonArray, canClick, playerNumber, pServer, rServer,varHolder, ln, dragLabel, timeLabel);
         LuffarView lv = new LuffarView(ln, lw);

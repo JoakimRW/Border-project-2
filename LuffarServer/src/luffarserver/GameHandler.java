@@ -12,7 +12,7 @@ public class GameHandler {
     private int[] array = new int[400];
     private int orgBoxClicked = -1;
     
-    
+    //constructor that sets all the array elements to zero
     public GameHandler(){
         for(int i = 0 ; i < 400 ; i++){
             array[i] = 0;
@@ -32,6 +32,9 @@ public class GameHandler {
     //the button that was pressed and surrounding buttons following pressed buttons
     //and reporting if any combination of buttons with the clicked button at its center 
     // reaches 5
+    //it receives a buttonclicked index and a playernumber
+    //it sets the array at given position to the playernumber
+    //then it checks on 8 directions to see if 5 in row is reached
     public String checkWin(int boxClicked, int playerNumber){
         
         orgBoxClicked = boxClicked;
@@ -455,6 +458,7 @@ public class GameHandler {
       int diagonal1 = northeast + eastnorth;
       int diagonal2 = northwest + westnorth;
       
+      //a string that contains the result after each click
       String result = "";
       
       if((leftright >= 4) || (updown >= 4) || (diagonal1 >= 4) || (diagonal2 >= 4)){

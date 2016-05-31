@@ -18,22 +18,24 @@ import javax.swing.JOptionPane;
  * @author JRW
  */
 public class ReadServer implements Runnable {
-    //variables
+    
+    //instance variables
     private Socket connection;
     private String msgFromServer;
     private VarHolder varHolder;
     private JButton[] arr;
-    int pNumber, pIndex;
-    boolean first = true, second = true;
-    LuffarNorth ln;
-    boolean hc = false;
-    JLabel dragLabel;
-    PrintServer pServer;
+    private int pNumber, pIndex;
+    private boolean first = true, second = true;
+    private LuffarNorth ln;
+    private boolean hc = false;
+    private JLabel dragLabel;
+    private PrintServer pServer;
 
     public ReadServer() {
 
     }
-
+    
+    //setting variables
     public void setSocketVB(Socket connection, VarHolder varHolder, JButton[] arr, LuffarNorth ln, JLabel dragLabel, PrintServer pServer) {
         this.connection = connection;
         this.varHolder = varHolder;
@@ -42,7 +44,8 @@ public class ReadServer implements Runnable {
         this.dragLabel = dragLabel;
         this.pServer = pServer;
     }
-    //getter and setter
+    
+    
     public void resetMessageFromServer() {
         msgFromServer = null;
     }
@@ -56,10 +59,13 @@ public class ReadServer implements Runnable {
 
         InputStream stream;
         try {
+            //input stream
             stream = connection.getInputStream();
-            //  Sedan öppnas en ström för att läsa det man får till datorn. 
+            
+            //scanning the stream 
             Scanner reader = new Scanner(stream);
-//			Så länge som det finns en ny rad att hämta kommer denna skrivas ut, vilket endast kommer hända en gång i detta exempel.
+            
+            //read the message and set varholder-message
             if (first == true) {
                 while (reader.hasNextLine()) {
                     varHolder.setMessage(reader.nextLine());
@@ -154,17 +160,20 @@ public class ReadServer implements Runnable {
                     }
                 }
                 
+                //set the playernumber variable
                 if (varHolder.getMessage() != null && varHolder.getMessage().length() > 1) {
                     System.out.println("getmessage = " + varHolder.getMessage());
                     pNumber = Integer.parseInt(varHolder.getMessage().substring(0, 1));
                     System.out.println("pNumber = " + pNumber);
                     
+                    //if it is not a win-message set the button or box index
                     if(hc == false){
                         pIndex = Integer.parseInt(varHolder.getMessage().substring(1)) - 1;
                     }
                     
                     System.out.println("pIndex = " + pIndex);
                 }
+                
                 // applies the players mark to a button 
                 if (varHolder.getMessage() != null && varHolder.getMessage().length() > 1 && arr[pIndex].getText() != "O" && arr[pIndex].getText() != "X" && hc==false) {
 
@@ -172,20 +181,15 @@ public class ReadServer implements Runnable {
                         arr[pIndex].setText("O");
                         System.out.println("Satt O på " + pIndex);
                         second = true;
-                        if (ln.getPlayerNumber() == 1) {
-                            System.out.println("canclicked i if sats , före set =" + ln.getCanClicked());
-
-                            //ln.setCanClicked(false);
-                            System.out.println("canclicked i if sats , efter set =" + ln.getCanClicked());
-                        } else {
-                            //ln.setCanClicked(true);
-                        }
+                        
+                        //switch player turn
                         if (ln.getCanClicked() == true) {
                             ln.setCanClicked(false);
                         } else {
                             ln.setCanClicked(true);
                         }
                         
+                        //set the text of the turn-label
                         if (ln.getCanClicked() == true && ln.getPlayerNumber() == 1) {
 
                             ln.getTurnLabel().setText("Your turn!");
@@ -206,20 +210,20 @@ public class ReadServer implements Runnable {
                         arr[pIndex].setText("X");
                         System.out.println("Satt X på " + pIndex);
                         second = true;
-                        if (ln.getPlayerNumber() == 2) {
-                            //ln.setCanClicked(true);
-                        } else {
-                            //ln.setCanClicked(true);
-                        }
+                        
+                        //switch player turn
                         if (ln.getCanClicked() == true) {
                             ln.setCanClicked(false);
                             
                         } else {
                             ln.setCanClicked(true);
                         }
+                        
+                        //increase turn variable
                         LuffarK.move++;
                         dragLabel.setText("Move: " + LuffarK.move);
                         
+                        //set the text of the turn-label
                         if (ln.getCanClicked() == true && ln.getPlayerNumber() == 1) {
 
                             ln.getTurnLabel().setText("Your turn!");
@@ -241,7 +245,7 @@ public class ReadServer implements Runnable {
                 //recieves the next line
                 if (second == true) {
                     while (reader.hasNextLine()) {
-//				nextLine kastar exception men borde inte hända då vi kollar om det finns en ny rad varje gång, innan de läses.
+                        
                         System.out.println("readServer before = " + varHolder.getMessage());
                         varHolder.setMessage(reader.nextLine());
                         System.out.println("readserver = " + varHolder.getMessage());

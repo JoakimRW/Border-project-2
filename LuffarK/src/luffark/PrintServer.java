@@ -15,6 +15,7 @@ import java.util.logging.Logger;
  */
 public class PrintServer implements Runnable {
 
+    //instance variables
     private Socket connection;
     private boolean sm= false;
     private String message;
@@ -23,38 +24,39 @@ public class PrintServer implements Runnable {
         
     }
     
+    //recieving and setting the socket
     public void setSocket(Socket connection) {
         this.connection = connection;
     }
+    
     public void sendMessage(String message){
         System.out.println("metod kallad");
         sm=true;
         this.message=message;
     }
+    
     @Override
     public void run() {
-//		Skapar ett scanner-objekt som lyssnar på vad användaren skriver i konsolen.
         
 
         try {
-//			Öppnar upp strömmen mot socket med 
+            //opening stream
             PrintWriter pWriter = new PrintWriter(connection.getOutputStream());
             
             while (true) {
                 try {
-                    //System.out.println(sm);
+                    
                     Thread.sleep(100);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(PrintServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                //send the message to server
                 if(sm==true){
                     System.out.println("if sats");
-                  pWriter.println(message);
-                  pWriter.flush();
+                    pWriter.println(message);
+                    pWriter.flush();
                   sm=false;
                 }
-                //pWriter.println(readingConsole.nextLine());
-                //pWriter.flush();
                 
             }
         } catch (IOException e) {

@@ -1,5 +1,5 @@
 /*
- * Luffarnorth creates the grid that holds the buttons of the playfield  
+ * Luffarnorth creates the grid that holds the northern buttons and labels  
  * it also handles much of the logic for sending messages to the server
  * it also defines the menubuttons and the time and number of moves
  * 
@@ -28,24 +28,26 @@ import javax.swing.Timer;
  * @author Reza
  */
 public class LuffarNorth extends JPanel implements ActionListener {
-    // variables
-    JButton btnNewGame, btnInfo, btnHighScore;
-    TextInputDialog getName;
-    PrintServer pServer;
-    ReadServer rServer;
-    String playerName;
-    VarHolder varHolder;
-    int playerNumber;
-    boolean canClick;
-    JButton arr[];
-    JLabel dragLabel;
-    JLabel timeLabel;
-    JLabel turnLabel;
-    double time = 0;
-    ActionListener taskPerformer;
-    Timer timer = new Timer(1000, taskPerformer);
-    Socket socket;
+    
+    // instance variables
+    private JButton btnNewGame, btnInfo, btnHighScore;
+    private TextInputDialog getName;
+    private PrintServer pServer;
+    private ReadServer rServer;
+    private String playerName;
+    private VarHolder varHolder;
+    private int playerNumber;
+    private boolean canClick;
+    private JButton arr[];
+    private JLabel dragLabel;
+    private JLabel timeLabel;
+    private JLabel turnLabel;
+    private double time = 0;
+    private ActionListener taskPerformer;
+    private Timer timer = new Timer(1000, taskPerformer);
+    private Socket socket;
 
+    //constructor
     public LuffarNorth(JButton[] arr, boolean canClick, int playerNumber, PrintServer pServer, ReadServer rServer, VarHolder varHolder, JLabel dragLabel, JLabel timeLabel,JLabel turnLabel) {
 
         this.arr = arr;
@@ -73,6 +75,7 @@ public class LuffarNorth extends JPanel implements ActionListener {
         btnInfo.setPreferredSize(new Dimension(850, 50));
         btnHighScore.setPreferredSize(new Dimension(850, 50));
 
+        //the layout and settings for the northern buttons and labels
         GridBagLayout gr = new GridBagLayout();
         setLayout(gr);
 
@@ -118,6 +121,7 @@ public class LuffarNorth extends JPanel implements ActionListener {
         timeLabel.setText("00:00");
         turnLabel.setText("turn");
 
+        //timer
         timer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -134,9 +138,11 @@ public class LuffarNorth extends JPanel implements ActionListener {
 
     }
 
+    //when clicking the buttons
     @Override
     public void actionPerformed(ActionEvent ae) {
 
+        //info button
         if (ae.getSource() == btnInfo) {
             JOptionPane.showMessageDialog(null,
                     "The goal with Tic Tac Toe is to get 5 marks in a row of the same type \n"
@@ -145,24 +151,32 @@ public class LuffarNorth extends JPanel implements ActionListener {
                     + "you cannot mark a square you or your opponent has already marked and you take turns marking \n");
         }
 
+        //new game button
         if (ae.getSource() == btnNewGame) {
 
-
-            System.out.println("Klienten startar");
+            System.out.println("Starting client...");
             try {
-//			Skapar en anslutning mot en server, denna kan kasta ett par exceptions (vilka alla är eller ligger under IOException)
                 if(socket != null){
                     socket.close();
                 }
                 
-                //få ip från användaren blir localhost om ingenting skrivs
+                //get IP-adress from client 
                 String address = JOptionPane.showInputDialog("Please enter the ip or nothing for localhost");
+                
+                //if nothing is written the IP will be localhost
                 if(address == null) address = "localhost";
                 socket = new Socket(address, 3004);
+                
+                //start the timer
                 timer.start();
-//			Kör igång en tråd för att kunna skriva till servern, klassen ser samma ut som serverns skrivar klass.			
+                
+                //set socket for printserver instance
                 pServer.setSocket(socket);
+                
+                //set socket, varholder, arraylist,luffarnorth,movelabel and printserver objects in readserver
                 rServer.setSocketVB(socket, varHolder, arr, this, dragLabel,pServer);
+                
+                //start 2 threads for printserver and readserver
                 Thread t1 = new Thread(pServer);
                 t1.start();
                 Thread t2 = new Thread(rServer);
@@ -173,6 +187,7 @@ public class LuffarNorth extends JPanel implements ActionListener {
                 varHolder.setPlayerName(playerName);
                 pServer.sendMessage(playerName);
 
+                //this loop runs when the player has not been given a playernumber
                 while (playerNumber == 0) {
                     System.out.println("Väntar på Spelarnummer");
                     if (varHolder.getMessage() != null) {
@@ -187,9 +202,10 @@ public class LuffarNorth extends JPanel implements ActionListener {
                     }
 
                 }
+                
                 btnHighScore.setEnabled(true);
                 btnNewGame.setEnabled(false);
-            } //Denna catch-sats fångar exception från nästan alla rader i try-satsen, enkelt att göra men kanske inte så bra då det blir så generellt.
+            } 
             catch (IOException e) {
                 System.out.println("Exception som kastades: " + e);
             }
@@ -204,6 +220,7 @@ public class LuffarNorth extends JPanel implements ActionListener {
 
     }
 
+    //getters and setters
     public boolean getCanClicked() {
         return canClick;
     }

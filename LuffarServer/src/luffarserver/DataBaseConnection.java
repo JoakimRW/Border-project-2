@@ -1,7 +1,7 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * This class handles the connection to the database
+ * It reads and writes to the database
+ * 
  */
 package luffarserver;
 
@@ -10,14 +10,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -28,8 +23,6 @@ import java.util.logging.Logger;
 public class DataBaseConnection {
     
     //instance variables
-    
-    
     private final String USERNAME="root";
     private final String PASSWORD="password";
     private final String CONN_STRING="jdbc:mysql://localhost:3306/luffarschack";
@@ -44,10 +37,9 @@ public class DataBaseConnection {
     private int highScoreTableLength = 0;
     private static boolean writeToDbFlag = true;
     
-    
+    //this method reads the records in the database
     public ArrayList<HighScore> readDB(){
        
-        
         //calling the method connectDB 
         conn = ConnectDB();
         
@@ -69,7 +61,8 @@ public class DataBaseConnection {
                 System.out.println("Error: "+e);
             }
         
-        
+        //this loop reads the database and stores the username, moveswon and time for every record in the database
+        //the data is stored in a new highscore object
         for ( int i = 1 ; i <= highScoreTableLength ; i++){
             
             HighScore hs = new HighScore();
@@ -97,9 +90,6 @@ public class DataBaseConnection {
             
             sql2="SELECT moveswon FROM highscore WHERE id = " + i ;
             
-       
-        
-        
             try{
                 //prepare statement and execute query
                 pre = conn.prepareStatement(sql2);
@@ -119,9 +109,6 @@ public class DataBaseConnection {
             
             sql3="SELECT timeswon FROM highscore WHERE id = " + i ;
             
-       
-       
-        
             try{
                 //prepare statement and execute query
                 pre = conn.prepareStatement(sql3);
@@ -140,11 +127,11 @@ public class DataBaseConnection {
             }
        
             
-            
+            //add the highscore-object to the arraylist
             arraylist.add(hs);
        
         } 
-        
+        //return the list
         return arraylist;
     }
     
@@ -167,7 +154,8 @@ public class DataBaseConnection {
     
     
     
-    
+    //this method gets username, moves and time of the winning client, adds it to the list and sorts 
+    //and writes the new list into the database
     public void writeHighScore(String username, int moveswon, String time){
         
         if(writeToDbFlag == true){
@@ -175,7 +163,10 @@ public class DataBaseConnection {
         //calling the connectDB-method to establish a connection
         conn = ConnectDB();
         
+        //clear the list, because the same list is used in this class
         arraylist.clear();
+        
+        //read the database and store all in the list
         arraylist = readDB();
         
         sql4="SELECT COUNT(*) FROM highscore;";
@@ -197,15 +188,19 @@ public class DataBaseConnection {
             
         highScoreTableLength++;
         
+        //add current winners data to a new hs-object
         HighScore highscore = new HighScore();
         highscore.setId(highScoreTableLength);
         highscore.setUser(username);
         highscore.setMoves(moveswon);
         highscore.setTime(time);
+        
+        //add the hs-object to the list
         arraylist.add(highscore);
             
         ArrayList<HighScore> arraylist2 = new ArrayList<HighScore>();
         
+        //call the sort-method to sort the list
         arraylist2 = sortHighScore(arraylist);
         
         //statement
@@ -214,9 +209,9 @@ public class DataBaseConnection {
         highScoreTableLength = getHighScoreLength();
          
         conn = ConnectDB();
+        
+        //a loop that deletes all the records in the database
         for(int x = 0 ; x < highScoreTableLength ; x++){
-            
-            //conn = ConnectDB();
             
             String sqlDel="DELETE FROM highscore " + "WHERE id = " + (x+1) ;
             System.out.println(sqlDel);
@@ -233,21 +228,23 @@ public class DataBaseConnection {
         }
             
         System.out.println("Writing to database:");
-             for(int x = 0 ; x < highScoreTableLength ; x++){
+        
+            // a loop that inserts the new list (the sorted) into the database 
+             for(int x = 0 ; x < arraylist2.size() ; x++){
                 conn = ConnectDB();
                 String sql="insert into highscore values (" + (x+1) + ",'" + arraylist2.get(x).getUser() + "'," + arraylist2.get(x).getMovesWon() + ",'" + arraylist2.get(x).getTime() + "');" ;
                 System.out.println((x+1) + ",'" + arraylist2.get(x).getUser() + "'," + arraylist2.get(x).getMovesWon() + ",'" + arraylist2.get(x).getTime());
         
-            try{
-                //statement and update-query
-                stmt = conn.createStatement();
-                stmt.executeUpdate(sql);
-                conn.close();
-            }
-            catch(Exception e){
-                System.out.println("Error: "+e);
+                try{
+                    //statement and update-query
+                    stmt = conn.createStatement();
+                    stmt.executeUpdate(sql);
+                    conn.close();
+                }
+                catch(Exception e){
+                    System.out.println("Error: "+e);
             
-            }
+                }
              
             }
              
@@ -256,32 +253,23 @@ public class DataBaseConnection {
         }
     }
     
+    // a method that sorts the list
     public ArrayList<HighScore> sortHighScore(ArrayList<HighScore> arrlist){
         
         arraylist = arrlist;
-        //int indexOfHighest = 0;
-        
-        /*
-        for(int i = 0 ; i < (arraylist.size())  ; i++){
-            
-            if(arraylist.get(i).getMovesWon() > arraylist.get(indexOfHighest).getMovesWon()){
-                
-                indexOfHighest = i;
-                System.out.println("indexofhighest = " + indexOfHighest);
-            }
-           
-        }*/
-        
-        //arraylist.remove(indexOfHighest);
         
         Collections.sort(arraylist);
         
-        arraylist.remove(arraylist.size()-1);
+        //we want to keep only top 5 highscores
+        if(arraylist.size()>5){
+            arraylist.remove(arraylist.size()-1);
+        }
+        
         
         return arraylist;
     }
     
-    
+    //a method that counts number of rows in the database
     public int getHighScoreLength(){
         
         //calling the method connectDB 
@@ -309,22 +297,5 @@ public class DataBaseConnection {
         
     }
 
-    /*
-    public int compareTo(HighScore comparestu) {
-        int comparemoves=((HighScore)comparestu).getMovesWon();
-        return comparemoves;
-    }*/
-
-    /*
-    @Override
-    public int compare(HighScore t, HighScore t1) {
-        return Integer.compare(t.getMovesWon(), t1.getMovesWon());
-    }*/
-
-    
-
-    
-
-   
     
 }

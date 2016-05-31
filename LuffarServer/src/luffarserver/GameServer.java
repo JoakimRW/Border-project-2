@@ -1,10 +1,9 @@
 /*
  * The main server class handling the connection between server and client
+ * it contains the server-loop
  */
 package luffarserver;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -22,53 +21,49 @@ import java.util.logging.Logger;
  */
 public class GameServer implements Runnable {
 
-//instance variables
+    //instance variables
     //this var holds the max number of players, if you change only this var the program works good 
-    public static final int maxNumberOfClients = 2;
+    private static final int maxNumberOfClients = 2;
 
     //this var holds the client iterator
-    public static int x = 0;
+    private static int x = 0;
 
     //this is the current thread in this instance (for every client)
     private Thread t;
 
     //an array of this class 
-    public static GameServer[] v = new GameServer[maxNumberOfClients];
+    private static GameServer[] v = new GameServer[maxNumberOfClients];
 
-    //socket for every instance of quiz, that means a socket connection for every client
-    public Socket connection;
+    //socket for every instance of this class, that means a socket connection for every client
+    private Socket connection;
 
     //a stream for every client
     private PrintStream writeToClient;
 
     //another client iterator which is used in this and other classes
-    public static int number = 0;
-
-    //an int that holds the current question number and is shared between the classes
-    public static int questionNr = 1;
-
-    //an int used to count the current question number and is shared between the classes
-    public static int test = 1;
-
+    private static int number = 0;
+    
     //scanner for scanning the input from user
     private Scanner sc;
 
-    //name of the client in this instance of the quiz
-    public String name = "";
-    public int playerNumber = 0;
+    //name of the client in this instance of the game
+    private String name = "";
+    private int playerNumber = 0;
 
-    //this flag is used to determine when to send the welcome message to the clients newly connected
+    //this flag is used to determine when to name the clients newly connected
     private boolean flag = false;
-    public static boolean writeToDbFlag = true; 
+    
+    //this flag is used to write to database once independent of how many clinets are connected
+    private static boolean writeToDbFlag = true; 
 
-    String msgReply = "250";
-    String msgFromClient = "";
-    public static DataBaseConnection db = new DataBaseConnection();
+    private String msgReply = "250";
+    private String msgFromClient = "";
+    private static DataBaseConnection db = new DataBaseConnection();
 
     public GameHandler gameHandler = new GameHandler();
 
     public GameServer() {
-        //if this is the first time the quiz runs, start the serverloop
+        //if this is the first time the gameserver runs, start the serverloop
         if (number == 0) {
 
             serverLoop();
@@ -78,10 +73,9 @@ public class GameServer implements Runnable {
     }
 
     public GameServer(Socket so, int plNum) throws IOException {
-        //set the quiz-instance socket
+        //set the gameserver-instance socket
         this.connection = so;
         this.playerNumber = plNum;
-        //db = new DataBaseConnection();
     }
 
     //the loop-method which will run until the maximum number of clients is reached
@@ -89,7 +83,7 @@ public class GameServer implements Runnable {
 
         try {
 
-            System.out.println("Startar server...");
+            System.out.println("Starting server...");
 
             //start the server socket on port 3004
             ServerSocket server = new ServerSocket(3004);
@@ -113,7 +107,7 @@ public class GameServer implements Runnable {
                 //a new instance of the quiz class
                 v[x] = new GameServer(connection, number);
 
-                //new thread and sending the new quiz-object as a argument
+                //new thread and sending the new gameserver-object as a argument
                 t = new Thread(v[x]);
 
                 //start the thread
@@ -139,13 +133,12 @@ public class GameServer implements Runnable {
         while (true) {
             try {
 
-                //if the client has been connected  
+                //if the client has been connected   
                 if (flag == false) {
 
                     //a new input stream for the client
                     InputStream stream = connection.getInputStream();
-                    DataOutputStream dataOutputStream = new DataOutputStream(
-                            connection.getOutputStream());
+                    
                     //scanning the inputstream
                     sc = new Scanner(stream);
 
@@ -159,6 +152,7 @@ public class GameServer implements Runnable {
 
                     System.out.println(name + " är nu uppkopplad! " + "spelarnummer = " + playerNumber);
 
+                    //sending playernumber to client(player)
                     String msgPlayerNumberToPlayer = Integer.toString(playerNumber);
                     PrintWriter printWriter = new PrintWriter(v[playerNumber - 1].connection.getOutputStream());
                     printWriter.println(msgPlayerNumberToPlayer);
@@ -169,12 +163,15 @@ public class GameServer implements Runnable {
 
                 }
 
+                //if the player has been given a name
                 if (!name.equals("")) {
                     try (Scanner sc = new Scanner(connection.getInputStream())) {
                         while (sc.hasNextLine()) {
+                            //read message from client
                             msgFromClient = sc.nextLine();
                             System.out.println("msgFromClient: " + msgFromClient);
 
+                            //substring the message
                             int pNumber = Integer.parseInt(msgFromClient.substring(0, 1));
                             String messageValue = msgFromClient.substring(1);
                             String writedbMessage = "";
@@ -183,15 +180,11 @@ public class GameServer implements Runnable {
                                 writedbMessage = msgFromClient.substring(1,8);
                             }
                             
-                            /*
-                            if(writedbMessage.equals("writedb")){
-                                System.out.println("writeDB");
-                            }*/
+                            
                             
                             //check if client wants see the highscore
                             if (messageValue.equals("highscore")) {
 
-                                
                                 int lengthOfTable = db.getHighScoreLength();
                                 ArrayList<HighScore> arraylist = new ArrayList<HighScore>();
                                 arraylist = db.readDB();
@@ -205,6 +198,7 @@ public class GameServer implements Runnable {
                                 printWriter.flush();
 
                             }
+                            //check if the end of the game is reached and it is time to write highscore to database
                             else if(writedbMessage.equals("writedb")){
                                 
                                 if(writeToDbFlag == true){
@@ -212,6 +206,7 @@ public class GameServer implements Runnable {
                                 
                                 System.out.println("writeDB");
                                 
+                                //put message in a chararray to check it letter by letter
                                 char[] charArray = msgFromClient.toCharArray();
                                 int moves=0;
                                 String strMoves = "";
@@ -219,6 +214,7 @@ public class GameServer implements Runnable {
                                 String winner = "";
                                 int j = 0;
                                 
+                                //get number of moves-won from the message from client
                                 for(int d = 0; d<charArray.length ; d++){
                                     if(charArray[d] == ','){
                                         j = d;
@@ -236,7 +232,7 @@ public class GameServer implements Runnable {
                                     
                                 }
                                 
-                                
+                                //get winner-name from the message from client
                                 int k = 0;
                                 for(int d = 0; d<charArray.length ; d++){
                                     if(charArray[d] == ','){
@@ -256,6 +252,7 @@ public class GameServer implements Runnable {
                                 }
                                 
                                 k = 0;
+                                //get winner-time from the message from client
                                 for(int d = 0; d<charArray.length ; d++){
                                     if(charArray[d] == ','){
                                         k++;
@@ -276,15 +273,20 @@ public class GameServer implements Runnable {
                                 System.out.println("winner = " + winner);
                                 System.out.println("time = " + time);
                                 
+                                //call the write highcore-method and write to database
                                 db.writeHighScore(winner, moves, time);
                                 writeToDbFlag = false;
                             }
                                 
                             }  
+                            //if the message is a game-message, that is a box or button on the playfield
+                            //has been clicked
                             else {
 
+                                //get the index of the button or box
                                 int pIndex = Integer.parseInt(msgFromClient.substring(1));
-
+                                
+                                //call the checkwin-method to see if 5 in row has been reached
                                 String result = gameHandler.checkWin(pIndex, pNumber);
 
                                 for (int y = 0; y < number; y++) {
@@ -295,11 +297,12 @@ public class GameServer implements Runnable {
 
                                 }
 
+                                //if the player has won, send the message to all clients
                                 for (int y = 0; y < number; y++) {
 
                                     if (result.equals("5 in row")) {
                                         String pName = v[pNumber-1].name;
-                                        msgFromClient = pNumber + result +pName;
+                                        msgFromClient = pNumber + result + pName;
                                     }
                                     PrintWriter printWriter = new PrintWriter(v[y].connection.getOutputStream());
                                     printWriter.println(msgFromClient);
@@ -310,6 +313,7 @@ public class GameServer implements Runnable {
                                 
                             
                         }
+                        //0.1 seconds delay
                         Thread.sleep(100);
                     } catch (IOException e) {
                         e.printStackTrace();

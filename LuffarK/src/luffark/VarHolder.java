@@ -18,6 +18,7 @@ public class VarHolder  {
         
     }
 
+    //getters and setters
     public String getPlayerName() {
         return playerName;
     }

@@ -7,7 +7,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
@@ -19,18 +18,19 @@ import javax.swing.JPanel;
  * @author Reza
  */
 public class LuffarWest extends JPanel implements ActionListener {
-    //variables
-    JButton btnNewGame, btnInfo, btnHighScore;
-    PrintServer pServer;
-    ReadServer rServer;
-    String playerName;
-    VarHolder varHolder;
-    int playerNumber;
-    boolean canClick;
-    JButton[] buttonArray;
-    LuffarNorth ln;
-    JLabel dragLabel;
-    JLabel timeLabel;
+    
+    //instance variables
+    private JButton btnNewGame, btnInfo, btnHighScore;
+    private PrintServer pServer;
+    private ReadServer rServer;
+    private String playerName;
+    private VarHolder varHolder;
+    private int playerNumber;
+    private boolean canClick;
+    private JButton[] buttonArray;
+    private LuffarNorth ln;
+    private JLabel dragLabel;
+    private JLabel timeLabel;
 
     
     //constructor
@@ -50,13 +50,13 @@ public class LuffarWest extends JPanel implements ActionListener {
 
         setLayout(gr);
         GridBagConstraints con;
+        
         //setting style of the buttons and their layout
         for (int x = 0; x < 400; x++) {
             buttonArray[x].setPreferredSize(new Dimension(60, 40));
             con = new GridBagConstraints();
             con.gridx = x % 20;
             con.gridy = (x / 20) + 1;
-            //con.insets = new Insets(0, 10, 0, 0);
             add(buttonArray[x], con);
             buttonArray[x].setFont(new Font("SansSerif", Font.BOLD, 12));
             buttonArray[x].setText(" ");
@@ -83,6 +83,7 @@ public class LuffarWest extends JPanel implements ActionListener {
         canClick = ln.getCanClicked();
         playerNumber = ln.getPlayerNumber();
 
+        //sends message to server containing the playernumber and the button or box that has been clicked
         if (canClick == true && playerNumber == 1) {
 
             System.out.println("button index +1= " + (k + 1));
